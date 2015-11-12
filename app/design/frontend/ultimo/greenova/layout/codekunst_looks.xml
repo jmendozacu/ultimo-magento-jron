@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><script>js/codekunst_looks.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>js/codekunst_looks_product.js</script></action>
+        </reference>
+    </default>
+    <product_look>
+        <reference name="product.info">
+            <action method="setTemplate">
+                <template>codekunst_looks/catalog/product/view.phtml</template>
+            </action>
+        </reference>
+        <reference name="head">
+            <action method="removeItem"><type>skin_js</type><name>js/scp/scp_product_extension.js</name></action>
+            <action method="addItem"><type>skin_css</type><name>css/codekunst_looks.css</name></action>
+        </reference>
+    </product_look>
+</layout>

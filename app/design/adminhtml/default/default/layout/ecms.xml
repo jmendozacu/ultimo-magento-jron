@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Licentia Enhanced CMS
+ *
+ * NOTICE OF LICENSE
+ * This source file is subject to the European Union Public Licence
+ * It is available through the world-wide-web at this URL:
+ * http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * @title      Licentia Enhanced CMS
+ * @category   Easy of Use
+ * @package    Licentia
+ * @author     Bento Vilas Boas <bento@licentia.pt>
+ * @copyright  Copyright (c) 2012 Licentia - http://licentia.pt
+ * @license    European Union Public Licence
+ */
+-->
+<layout>
+    <adminhtml_cms_block_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="ecms/adminhtml_block_grid" name="admin.ecms.block.grid"/>
+        </block>
+    </adminhtml_cms_block_grid>
+    <adminhtml_cms_page_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="ecms/adminhtml_page_grid" name="admin.ecms.page.grid"/>
+        </block>
+    </adminhtml_cms_page_grid>
+</layout>

@@ -1,0 +1,68 @@
+<ol>
+    <?php foreach ($this->getItems() as $_item): ?>
+      <?php if($_item->getFilter()->getRequestVar() == "filter_color"): ?>
+        <li>
+          <?php if ($_item->getCount() >= 0): ?>
+            <input type="checkbox"<?php if ($_item->isSelected()): ?> checked="checked" <?php endif; ?>
+            <?php if ($this->helper('catalin_seo')->isAjaxEnabled()): ?>
+                 onclick="$(this).next().click()"
+            <?php else: ?>
+                 onclick="setLocation('<?php echo ($_item->isSelected()) ? $this->urlEscape($_item->getRemoveUrl()) : $this->urlEscape($_item->getUrl()) ?>')"
+            <?php endif; ?>
+            />
+            <?php 
+              /*FG Modify*/
+                $attr = Mage::getModel('catalog/product')->getResource()->getAttribute("filter_color");
+                if ($attr->usesSource()) {
+                    $color_value = $attr->getSource()->getOptionId($_item->getLabel());
+                }
+                $_collection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+                    ->setAttributeFilter($attr->getId())->setStoreFilter(0)->load();
+                foreach( $_collection->toOptionArray() as $_cur_option ) {
+                  if($_cur_option['value'] == $color_value){
+                    $color_label = $_cur_option['label'];
+                    break;
+                  }
+                }
+            ?>
+            <a id="c<?php echo $color_label; ?>"
+            <?php if ($_item->isSelected()): ?>
+                    onclick="$(this).previous().checked = false;" class="checkbox selected"
+                <?php else: ?>
+                    onclick="$(this).previous().checked = true;" class="checkbox unselected"
+                <?php endif; ?>                            
+                href="<?php echo ($_item->isSelected()) ? $_item->getRemoveUrl() : $_item->getUrl() ?>"
+                alt="<?php echo $_item->getLabel() ?>"
+                title="<?php echo $_item->getLabel() ?>"
+                ><?php echo $_item->getLabel() ?></a>
+            <?php else: ?>
+                <?php echo $_item->getLabel() ?>
+            <?php endif; ?>
+        </li>
+      <?php else: ?>
+        <li>
+          <?php if ($_item->getCount() > 0): ?>
+            <input type="checkbox"<?php if ($_item->isSelected()): ?> checked="checked" <?php endif; ?>
+            <?php if ($this->helper('catalin_seo')->isAjaxEnabled()): ?>
+                 onclick="$(this).next().click()"
+            <?php else: ?>
+                 onclick="setLocation('<?php echo ($_item->isSelected()) ? $this->urlEscape($_item->getRemoveUrl()) : $this->urlEscape($_item->getUrl()) ?>')"
+            <?php endif; ?>
+            />
+            <a 
+            <?php if ($_item->isSelected()): ?>
+                    onclick="$(this).previous().checked = false;" class="checkbox selected"
+                <?php else: ?>
+                    onclick="$(this).previous().checked = true;" class="checkbox unselected"
+                <?php endif; ?>                            
+                href="<?php echo ($_item->isSelected()) ? $_item->getRemoveUrl() : $_item->getUrl() ?>"
+                alt="<?php echo $_item->getLabel() ?>"
+                title="<?php echo $_item->getLabel() ?>"
+                ><?php echo $_item->getLabel() ?></a>
+            <?php else: ?>
+                <?php echo $_item->getLabel() ?>
+            <?php endif; ?>
+        </li>
+      <?php endif; ?>
+    <?php endforeach ?>
+</ol>

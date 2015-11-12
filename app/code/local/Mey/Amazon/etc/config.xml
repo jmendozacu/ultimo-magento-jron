@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Amazon>
+            <version>0.1.0</version>
+        </Mey_Amazon>
+    </modules>
+    <global>
+        <models>
+            <mey_amazon>
+                <class>Mey_Amazon_Model</class>
+            </mey_amazon>
+        </models>
+    </global>
+    <frontend>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <mey_amazon>
+                        <class>mey_amazon/observer</class>
+                        <type>singleton</type>
+                        <method>clearAmazonData</method>
+                    </mey_amazon>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+    </frontend>
+</config>

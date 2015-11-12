@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<layout>
+    <ajaxpopup_index_index>
+        <block type="core/template" name="popup" output="toHtml" template="page/html/checkoutpopup.phtml" />
+    </ajaxpopup_index_index>
+</layout>

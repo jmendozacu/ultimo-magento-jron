@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Codekunst_PaymentInformation>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Codekunst_Payglobe/>
+                <Paymentnetwork_Pnsofortueberweisung/>
+
+            </depends>
+        </Codekunst_PaymentInformation>
+    </modules>
+</config>

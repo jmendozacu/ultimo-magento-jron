@@ -1,0 +1,215 @@
+2015-11-02T03:00:02+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/oauth/token with params:
+Array
+(
+    [grant_type] => client_credentials
+    [client_id] => ZcpYtk4lQ2dpGu3/mfEdTbrO5cWxNbwE
+    [client_secret] => Y0bEj0eJDlLKLCm6hXpf5IZWRO3Q3taQgiihVuFLNv51qiBgecUMh/E3zMU8
+)
+
+2015-11-02T03:00:06+00:00 DEBUG (7): Response: 200 with body:
+{"access_token":"6m5E7GVNYuoLOESh11Nss0Vbs+BwtQkHnnONhfczjmGb1jLGA5MD5GsiY3ql","expires_in":3600,"token_type":"bearer","scope":null}
+
+2015-11-02T03:00:06+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/authorizations with params:
+Array
+(
+    [gender] => male
+    [firstname] => TEST
+    [lastname] => KUNDE
+    [country] => DE
+    [street] => sampleaddress
+    [housenumber] => 
+    [zip] => 12345
+    [city] => sample
+    [birthday] => 1995-01-08
+    [currency] => EUR
+    [amount] => 3590
+)
+
+2015-11-02T03:00:08+00:00 DEBUG (7): Response: 400 with body:
+{"status":400,"message":"Your Request for Authorization is not complete.","payload":[{"property":"housenumber","code":null,"message":"This value should not be blank."}]}
+
+2015-11-02T03:00:20+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/oauth/token with params:
+Array
+(
+    [grant_type] => client_credentials
+    [client_id] => ZcpYtk4lQ2dpGu3/mfEdTbrO5cWxNbwE
+    [client_secret] => Y0bEj0eJDlLKLCm6hXpf5IZWRO3Q3taQgiihVuFLNv51qiBgecUMh/E3zMU8
+)
+
+2015-11-02T03:00:21+00:00 DEBUG (7): Response: 200 with body:
+{"access_token":"bFAGtATNimrETYYliLbxZ1LuIe8RjUH5ZP3Sru\/3jk\/Hq\/EOoyRqHRU3HvH8","expires_in":3600,"token_type":"bearer","scope":null}
+
+2015-11-02T03:00:22+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/authorizations with params:
+Array
+(
+    [gender] => male
+    [firstname] => TEST
+    [lastname] => KUNDE
+    [country] => DE
+    [street] => sampleaddress
+    [housenumber] => 
+    [zip] => 12345
+    [city] => sample
+    [birthday] => 1995-01-08
+    [currency] => EUR
+    [amount] => 3590
+)
+
+2015-11-02T03:00:23+00:00 DEBUG (7): Response: 400 with body:
+{"status":400,"message":"Your Request for Authorization is not complete.","payload":[{"property":"housenumber","code":null,"message":"This value should not be blank."}]}
+
+2015-11-02T03:11:41+00:00 DEBUG (7): Cleaning recommendation cache after order placement.
+2015-11-02T07:03:31+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/oauth/token with params:
+Array
+(
+    [grant_type] => client_credentials
+    [client_id] => ZcpYtk4lQ2dpGu3/mfEdTbrO5cWxNbwE
+    [client_secret] => Y0bEj0eJDlLKLCm6hXpf5IZWRO3Q3taQgiihVuFLNv51qiBgecUMh/E3zMU8
+)
+
+2015-11-02T07:03:34+00:00 DEBUG (7): Response: 200 with body:
+{"access_token":"xWRPDUFdURT2dVNFveCy1mv7BzgqOxZPLCoryeWKolUIEnN0gLIgm9iF2jmN","expires_in":3600,"token_type":"bearer","scope":null}
+
+2015-11-02T07:03:34+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/authorizations with params:
+Array
+(
+    [gender] => male
+    [firstname] => TEST
+    [lastname] => KUNDE
+    [country] => DE
+    [street] => sampleaddress
+    [housenumber] => 
+    [zip] => 12345
+    [city] => city
+    [birthday] => 1995-08-01
+    [currency] => EUR
+    [amount] => 5585
+)
+
+2015-11-02T07:03:36+00:00 DEBUG (7): Response: 400 with body:
+{"status":400,"message":"Your Request for Authorization is not complete.","payload":[{"property":"housenumber","code":null,"message":"This value should not be blank."}]}
+
+2015-11-02T07:03:48+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/oauth/token with params:
+Array
+(
+    [grant_type] => client_credentials
+    [client_id] => ZcpYtk4lQ2dpGu3/mfEdTbrO5cWxNbwE
+    [client_secret] => Y0bEj0eJDlLKLCm6hXpf5IZWRO3Q3taQgiihVuFLNv51qiBgecUMh/E3zMU8
+)
+
+2015-11-02T07:03:49+00:00 DEBUG (7): Response: 200 with body:
+{"access_token":"JqtxhiZJR\/yJNXZxvCPwfLQ2Iuxr1PwCJly8aGhtqo66uOG0pWt\/HPF0+Tcm","expires_in":3600,"token_type":"bearer","scope":null}
+
+2015-11-02T07:03:49+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/authorizations with params:
+Array
+(
+    [gender] => male
+    [firstname] => TEST
+    [lastname] => KUNDE
+    [country] => DE
+    [street] => sampleaddress
+    [housenumber] => 
+    [zip] => 12345
+    [city] => city
+    [birthday] => 1995-08-01
+    [currency] => EUR
+    [amount] => 5585
+)
+
+2015-11-02T07:03:50+00:00 DEBUG (7): Response: 400 with body:
+{"status":400,"message":"Your Request for Authorization is not complete.","payload":[{"property":"housenumber","code":null,"message":"This value should not be blank."}]}
+
+2015-11-02T07:04:42+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/oauth/token with params:
+Array
+(
+    [grant_type] => client_credentials
+    [client_id] => ZcpYtk4lQ2dpGu3/mfEdTbrO5cWxNbwE
+    [client_secret] => Y0bEj0eJDlLKLCm6hXpf5IZWRO3Q3taQgiihVuFLNv51qiBgecUMh/E3zMU8
+)
+
+2015-11-02T07:04:43+00:00 DEBUG (7): Response: 200 with body:
+{"access_token":"VWxXwUlWbTbSfUoFSVeyGBRa5d6Td8Ri8Gj6aW5vJ+42UZNDO\/ebR7fK6CGR","expires_in":3600,"token_type":"bearer","scope":null}
+
+2015-11-02T07:04:43+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/authorizations with params:
+Array
+(
+    [gender] => male
+    [firstname] => TEST
+    [lastname] => KUNDE
+    [country] => DE
+    [street] => sampleaddress
+    [housenumber] => 
+    [zip] => 12345
+    [city] => city
+    [birthday] => 1995-08-01
+    [currency] => EUR
+    [amount] => 5585
+)
+
+2015-11-02T07:04:44+00:00 DEBUG (7): Response: 400 with body:
+{"status":400,"message":"Your Request for Authorization is not complete.","payload":[{"property":"housenumber","code":null,"message":"This value should not be blank."}]}
+
+2015-11-02T07:05:00+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/oauth/token with params:
+Array
+(
+    [grant_type] => client_credentials
+    [client_id] => ZcpYtk4lQ2dpGu3/mfEdTbrO5cWxNbwE
+    [client_secret] => Y0bEj0eJDlLKLCm6hXpf5IZWRO3Q3taQgiihVuFLNv51qiBgecUMh/E3zMU8
+)
+
+2015-11-02T07:05:01+00:00 DEBUG (7): Response: 200 with body:
+{"access_token":"wQg9NCmb9LnkxWLtDp9A8Y7cpJtrMgT6Ccmh27KK+lXZUCHs2mHYSvA30LVq","expires_in":3600,"token_type":"bearer","scope":null}
+
+2015-11-02T07:05:01+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/authorizations with params:
+Array
+(
+    [gender] => male
+    [firstname] => TEST
+    [lastname] => KUNDE
+    [country] => DE
+    [street] => sampleaddress
+    [housenumber] => 
+    [zip] => 12345
+    [city] => city
+    [birthday] => 1995-08-01
+    [currency] => EUR
+    [amount] => 5585
+)
+
+2015-11-02T07:05:03+00:00 DEBUG (7): Response: 400 with body:
+{"status":400,"message":"Your Request for Authorization is not complete.","payload":[{"property":"housenumber","code":null,"message":"This value should not be blank."}]}
+
+2015-11-02T07:05:16+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/oauth/token with params:
+Array
+(
+    [grant_type] => client_credentials
+    [client_id] => ZcpYtk4lQ2dpGu3/mfEdTbrO5cWxNbwE
+    [client_secret] => Y0bEj0eJDlLKLCm6hXpf5IZWRO3Q3taQgiihVuFLNv51qiBgecUMh/E3zMU8
+)
+
+2015-11-02T07:05:18+00:00 DEBUG (7): Response: 200 with body:
+{"access_token":"4eBfIiMZRSUGhNJj3iqOe8zWxfRIxDHzslXMSrJbhLNo96xdhc7hvnBK\/El8","expires_in":3600,"token_type":"bearer","scope":null}
+
+2015-11-02T07:05:18+00:00 DEBUG (7): POST https://payglobe.fortuneglobe.com/authorizations with params:
+Array
+(
+    [gender] => male
+    [firstname] => TEST
+    [lastname] => KUNDE
+    [country] => DE
+    [street] => sampleaddress
+    [housenumber] => 
+    [zip] => 12345
+    [city] => city
+    [birthday] => 1995-08-01
+    [currency] => EUR
+    [amount] => 5585
+)
+
+2015-11-02T07:05:19+00:00 DEBUG (7): Response: 400 with body:
+{"status":400,"message":"Your Request for Authorization is not complete.","payload":[{"property":"housenumber","code":null,"message":"This value should not be blank."}]}
+
+2015-11-02T07:05:35+00:00 DEBUG (7): Cleaning recommendation cache after order placement.
+2015-11-03T04:06:10+00:00 DEBUG (7): Cleaning recommendation cache after order placement.
+2015-11-03T07:03:23+00:00 DEBUG (7): Cleaning recommendation cache after order placement.
+2015-11-09T09:46:42+00:00 DEBUG (7): Cleaning recommendation cache after order placement.

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <FG_Connector>
+            <version>0.1.9.9</version>
+        </FG_Connector>
+    </modules>
+
+    <global>
+
+        <models>
+            <fg_connector>
+                <class>FG_Connector_Model</class>
+            </fg_connector>
+            <cataloginventory>
+                <rewrite>
+                    <stock_item_api>FG_Connector_Model_Stock_Item_Api</stock_item_api>
+                </rewrite>
+            </cataloginventory>
+        </models>
+
+        <helpers>
+            <fg_connector>
+                <class>FG_Connector_Helper</class>
+            </fg_connector>
+        </helpers>
+
+        <events>
+            <checkout_submit_all_after><!-- sales_order_place_after -->
+                <observers>
+                    <fg_connector>
+                        <class>fg_connector/observer</class>
+                        <method>propagateOrder</method>
+                        <type>singleton</type>
+                    </fg_connector>
+                </observers>
+            </checkout_submit_all_after>
+            <sales_order_save_after><!-- sales_order_place_after -->
+                <observers>
+                    <fg_connector>
+                        <class>fg_connector/observer</class>
+                        <method>sendamazonpayment</method>
+                        <type>singleton</type>
+                    </fg_connector>
+                </observers>
+            </sales_order_save_after>
+        </events>
+
+        <sales>
+            <order>
+                <statuses>
+                    <faulty translate="label">
+                        <label>Faulty</label>
+                    </faulty>
+                    <partially_open translate="label">
+                        <label>Partially Open</label>
+                    </partially_open>
+                    <partially_processing translate="label">
+                        <label>Partially Proccessing</label>
+                    </partially_processing>
+                    <readytoship translate="label">
+                        <label>Ready to Ship</label>
+                    </readytoship>
+                    <partially_readytoship translate="label">
+                        <label>Partially Ready to Ship</label>
+                    </partially_readytoship>
+                    <delivered translate="label">
+                        <label>Delivered</label>
+                    </delivered>
+                    <partially_delivered translate="label">
+                        <label>Partially Delivered</label>
+                    </partially_delivered>
+                    <received translate="label">
+                        <label>Received</label>
+                    </received>
+                    <partially_received translate="label">
+                        <label>Partially Received</label>
+                    </partially_received>
+                </statuses>
+            </order>
+        </sales>
+
+        <resources>
+            <fg_connector_setup>
+                <setup>
+                    <module>FG_Connector</module>
+                    <class>FG_Connector_Model_Mysql4_Setup</class>
+                </setup>
+            </fg_connector_setup>
+        </resources>
+        <fieldsets>
+            <sales_convert_order>
+                <customer_source>
+                    <to_quote>*</to_quote>
+                </customer_source>
+            </sales_convert_order>
+            <sales_convert_quote>
+                <customer_source>
+                    <to_order>*</to_order>
+                </customer_source>
+            </sales_convert_quote>
+        </fieldsets>
+    </global>
+
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <fg_options>
+                                            <title>Fortuneglobe Section</title>
+                                        </fg_options>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+
+    <crontab>
+        <jobs>
+            <send_orders_to_alvine>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>fg_connector/observer::processOrderQueue</model>
+                </run>
+            </send_orders_to_alvine>
+        </jobs>
+    </crontab>
+</config>

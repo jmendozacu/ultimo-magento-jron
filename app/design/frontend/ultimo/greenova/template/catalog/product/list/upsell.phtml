@@ -1,0 +1,281 @@
+<?php
+/**
+ * Up-sell products slider
+ */
+?>
+<?php
+$_collectionSize = count($this->getItemCollection()->getItems());
+$_mainProduct = Mage::registry('product');
+$today = Mage::app()->getLocale()->storeTimeStamp(Mage::app()->getStore()->getId());
+$activeMainSale = false;
+if($_mainProduct->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+    /** @var Mage_Catalog_Model_Product_Type_Configurable $mainTypeInstance */
+    $mainTypeInstance = $_mainProduct->getTypeInstance();
+    $mainChildrenCollection = $mainTypeInstance->getUsedProductCollection($_mainProduct);
+    $mainChildrenCollection->addFinalPrice();
+    foreach ($mainChildrenCollection as $childProduct) {
+        if ($childProduct->getPrice() > $childProduct->getFinalPrice()) {
+            $activeMainSale = true;
+            break;
+        }
+    }
+}
+?>
+<?php if($_collectionSize): ?>
+    <?php
+    $theme = $this->helper('ultimo');
+    $helpImg = $this->helper('infortis/image');
+    $helper = $this->helper('catalog/output');
+    $sliderClasses = '';
+    $gridClasses = '';
+
+    $sliderId = "itemslider-upsell";
+
+    //Slider parameters
+    //--------------------------------------------------------------
+
+    //Responsive mode on/off
+    $isResponsive = true;
+
+    //Assign number of items in a row to specific viewport width
+    $breakpoints = '[0, 1], [320, 1], [480, 1], [660, 2], [960, 3], [1280, 3]';
+
+    //Pagination on/off
+    $pagination = false;
+
+    //Default image size
+    $imgWidth = 115;
+    $imgHeight = 135;
+
+    //Image aspect ratio
+    if ($theme->getCfg('category/aspect_ratio'))
+    {
+        $imgHeight = 0; //Height will be computed automatically (based on width) to keep the aspect ratio
+    }
+
+    //Slider timeout. Set to enable automatic scrolling.
+    $timeout = intval($theme->getCfg('product_page/upsell_timeout'));
+
+    //Number of items that should move on scrolling
+    $move = 1;
+
+    //If set, slider will loop
+    $loop = $theme->getCfg('product_slider/loop');
+
+    //Speed (arrows / touch swipe)
+    $speed = intval($theme->getCfg('product_slider/speed'));
+
+    //Speed (automatic scrolling / pagination)
+    $autoSpeed = intval($theme->getCfg('product_slider/auto_speed'));
+
+    //Pause slider on mouse hover
+    $pause = $theme->getCfg('product_slider/pause');
+
+    //Lazy loading
+    $lazy = $theme->getCfg('product_slider/lazy');
+
+    //Slider classes
+    //--------------------------------------------------------------
+    if($isResponsive)
+    {
+        $sliderClasses .= ' itemslider-responsive';
+    }
+
+    if ($_collectionSize == 1)
+    {
+        $sliderClasses .= ' single-item';
+    }
+
+    //Product grid classes
+    //--------------------------------------------------------------
+
+    //Align elements to the center
+    if ($theme->getCfg('category_grid/centered'))
+    {
+        $gridClasses .= ' centered';
+    }
+    ?>
+
+    <h3 class="section-title padding-right"><?php echo $this->__('You may also be interested in the following product(s)'); ?></h3>
+    <div class="itemslider-wrapper itemslider-upsell-wrapper slider-arrows1 slider-arrows1-pos-top-right slider-pagination1">
+        <div id="<?php echo $sliderId; ?>" class="itemslider<?php if($sliderClasses) echo $sliderClasses; ?> products-grid<?php if($gridClasses) echo $gridClasses; ?>">
+            <?php $this->resetItemsIterator() ?>
+            <?php $loop = $this->getItemCollection()->addAttributeToSelect('style')->getItems(); ?>
+            <?php foreach( $loop as $_product): //$_link replaced with $_product ?>
+                <?php
+                $simpleHasSalePrice = false;
+
+                if ($_product->getTypeId() == "configurable") {
+                    //Get Data from Associate Configurable Product
+                    $childrenIds = Mage::getModel('catalog/product_type_configurable')->getChildrenIds($_product->getId());
+                    $storeId = Mage::app()->getStore()->getStoreId();
+
+                    // Check if any child has an active special price
+                    if(!$activeMainSale) {
+                        /** @var Mage_Catalog_Model_Product_Type_Configurable $typeInstance */
+                        $typeInstance = $_product->getTypeInstance();
+                        $childrenCollection = $typeInstance->getUsedProductCollection($_product);
+                        $childrenCollection->addFinalPrice();
+                        foreach ($childrenCollection as $childProduct) {
+                            if ($childProduct->getPrice() > $childProduct->getFinalPrice()) {
+                                $simpleHasSalePrice = true;
+                                break;
+                            }
+                        }
+                        if ($simpleHasSalePrice) continue;
+                    }
+
+                    // Get Parameter from Upsell Block
+                    $colorCode = $this->getData("ColorCode");
+                    // Load Child with Gallery
+                    $tmp = Mage::getModel('catalog/product')
+                        ->getCollection()
+                        ->addStoreFilter($storeId)
+                        ->addAttributeToSelect(array('image', 'media_gallery', 'name', 'style','number','color_code','color','url_seo_key'))
+                        ->addAttributeToFilter('entity_id', array('in' => $childrenIds))
+                        ->addAttributeToFilter('color_code', array('eq' => $colorCode))
+                        ->getFirstItem()->load('media_gallery');
+                    if($tmp->getName() != ""){
+                        $_simpleProduct = $tmp;
+                    }else{
+                        // get data from current product which doesn't posses the associated color
+                        $_simpleProduct = Mage::getModel('catalog/product')
+                            ->getCollection()
+                            ->addStoreFilter($storeId)
+                            ->addAttributeToSelect(array('image', 'media_gallery', 'name', 'style','number','color_code','color','url_seo_key'))
+                            ->addAttributeToFilter('entity_id', array('in' => $childrenIds))
+                            ->getFirstItem()->load('media_gallery');
+                    }
+
+                    //Create SEO URL to Product
+
+                    $productUrl = Mage::getBaseUrl().$_simpleProduct->getUrlSeoKey();
+
+                } else {
+                    $_simpleProduct = $_product;
+                    $productUrl = $_product->getProductUrl();
+                }
+                ?>
+
+                <div class="item" id="upsell-product-<?php echo $_product->getId() ?>">
+                    <form action="<?php echo $this->helper("checkout/cart")->getAddUrl($_product) ?>" method="post" id="upsell-form-<?php echo $_product->getId() ?>" class="upsell_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+                        <?php // echo $this->getBlockHtml('formkey'); ?>
+                        <div class="no-display">
+                            <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+                            <input type="hidden" name="related_product" id="related-products-field" value="" />
+                        </div>
+                        <a href="<?php echo $productUrl ?>" title="<?php echo $this->escapeHtml($_simpleProduct->getName()) ?>" class="product-image">
+
+                            <?php if ($lazy): ?>
+                                <img class="lazyOwl" data-src="<?php echo $helpImg->getImg($_simpleProduct, $imgWidth, $imgHeight, 'small_image'); ?>" alt="<?php echo $this->escapeHtml($_simpleProduct->getName()) ?>" />
+                            <?php else: ?>
+                                <img src="<?php echo $helpImg->getImg($_simpleProduct, $imgWidth, $imgHeight, 'small_image'); ?>" alt="<?php echo $this->escapeHtml($_simpleProduct->getName()) ?>" />
+                            <?php endif; ?>
+
+                        </a>
+                        <div class="product-information">
+                            <h3 class="product-name">
+                                <a href="<?php echo $productUrl ?>" title="<?php echo $this->escapeHtml($_simpleProduct->getName()) ?>">
+                                    <?php echo $this->escapeHtml($_simpleProduct->getName()) ?> <?php echo ' "'.$this->escapeHtml($_simpleProduct->getStyle()).'"' ?>
+                                </a>
+                            </h3>
+                            <div class="product-price">
+                                <span class="label price-label"><?php echo $this->__('Price') ?></span>
+                                <?php echo $this->getPriceHtml( $_simpleProduct, true ) ?>
+                            </div>
+
+                            <?php if(!$activeMainSale): ?>
+                                <?php if ($_product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE): ?>
+                                    <?php echo $this->getLayout()->createBlock('catalog/product_view_type_configurable')
+                                        ->setTemplate('codekunst_upsell/catalog/product/view/type/options/configurable.phtml')
+                                        ->setProduct($_product)
+                                        ->setColor($_simpleProduct->getColor())
+                                        ->toHtml(); ?>
+                                <?php endif; ?>
+                                <?php echo $this->getLayout()->createBlock('core/template')
+                                    ->setTemplate('codekunst_upsell/catalog/product/view/qty.phtml')
+                                    ->setProduct($_product)
+                                    ->toHtml() ?>
+
+                                <?php $buttonTitle = $this->__('Add to Cart'); ?>
+                                <script type="text/javascript">
+                                    upsellForms[<?php echo $_product->getId() ?>] = new VarienForm("upsell-form-<?php echo $_product->getId() ?>");
+                                </script>
+
+                                <button type="button" title="<?php echo $buttonTitle ?>" class="button btn-cart" onclick="upsellForms[<?php echo $_product->getId() ?>].submit(this)">
+                                    <span><span><?php echo $buttonTitle ?></span></span>
+                                </button>
+                            <?php else: ?>
+                                <a class="button" href="<?php echo $productUrl ?>">
+                                    <?php echo $this->__('Zum Produkt'); ?>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        </div> <!-- end: itemslider -->
+    </div> <!-- end: itemslider-wrapper -->
+    <script type="text/javascript">
+        //<![CDATA[
+        jQuery(function() {
+            ajaxcart.initializeUpselling();
+        });
+        jQuery(function($) {
+
+            var owl = $('#<?php echo $sliderId; ?>');
+            owl.owlCarousel({
+
+                <?php if ($lazy): ?>
+                lazyLoad: true,
+                <?php endif; ?>
+
+                <?php if(!$isResponsive): ?>
+                responsive: false,
+                items: <?php echo $showItems; ?>,
+                <?php else: ?>
+                itemsCustom: [ <?php echo $breakpoints; ?> ],
+                responsiveRefreshRate: 50,
+                <?php endif; ?>
+
+                <?php if ($speed): ?>
+                slideSpeed: <?php echo $speed; ?>,
+                <?php endif; ?>
+
+                <?php if ($autoSpeed): ?>
+                paginationSpeed: <?php echo $autoSpeed; ?>,
+                <?php endif; ?>
+
+                <?php if ($move !== 1): ?>
+                scrollPerPage: true,
+                <?php endif; ?>
+
+                <?php if ($timeout): ?>
+                autoPlay: <?php echo $timeout; ?>,
+                <?php endif; ?>
+
+                <?php if ($pause): ?>
+                stopOnHover: true,
+                <?php endif; ?>
+
+                <?php if ($loop): ?>
+                rewindNav: true,
+                rewindSpeed: 600,
+                <?php else: ?>
+                rewindNav: false,
+                <?php endif; ?>
+
+                <?php if ($pagination): ?>
+                pagination: true,
+                <?php else: ?>
+                pagination: false,
+                <?php endif; ?>
+
+                navigation: true
+
+            }); //end: owl
+
+        });
+        //]]>
+    </script>
+<?php endif; ?>

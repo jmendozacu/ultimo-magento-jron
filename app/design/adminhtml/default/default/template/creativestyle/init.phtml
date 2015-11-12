@@ -1,0 +1,31 @@
+<?php
+/**
+ * @category   Creativestyle
+ * @package    Creativestyle_Core
+ * @copyright  Copyright (c) 2011 - 2013 creativestyle GmbH (http://www.creativestyle.de)
+ * @author     Marek Zabrowarny / creativestyle GmbH <amazon@creativestyle.de>
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<script type="text/javascript">//<![CDATA[
+    document.observe('dom:loaded', function() {
+        if ($('creative-system-config')) {
+            $('creative-system-config').setStyle({
+                display: 'block', backgroundImage: 'url(<?php echo $this->getSkinUrl('creativestyle/images/cs_logo.png'); ?>)',
+                backgroundPosition: '0 50%', backgroundRepeat: 'no-repeat', height: '27px', margin: '0', padding: '0',
+                textIndent: '-9999px', cursor: 'auto'
+            });
+        }
+        var menuItems = $$('#nav li.level0 > a > span');
+        if (menuItems.length) {
+            menuItems.each(function(item) {
+                if (item.innerHTML == 'creativestyle') {
+                    item.setStyle({
+                        display: 'block', backgroundImage: 'url(<?php echo $this->getSkinUrl('creativestyle/images/cs_logo_white.png'); ?>)', overflow: 'hidden',
+                        width: '100px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center', textIndent: '-9999px'
+                    });
+                }
+            });
+        }
+    });
+//]]></script>

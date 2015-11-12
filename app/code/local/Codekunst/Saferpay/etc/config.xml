@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Codekunst_Saferpay>
+            <version>0.1.0</version>
+        </Codekunst_Saferpay>
+    </modules>
+    <global>
+        <helpers>
+            <codekunst_saferpay>
+                <class>Codekunst_Saferpay_Helper</class>
+            </codekunst_saferpay>
+            <SaferpayCw>
+                <rewrite>
+                    <data>Codekunst_Saferpay_Helper_Data</data>
+                </rewrite>
+            </SaferpayCw>
+        </helpers>
+    </global>
+</config>

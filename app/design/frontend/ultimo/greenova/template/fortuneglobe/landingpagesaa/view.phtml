@@ -1,0 +1,892 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+?>
+
+<?php
+$_productCollection = $this->getLoadedProductCollection();
+$_collectionSize    = $_productCollection->count();
+$CurrentCategory    = Mage::registry( 'current_category' );
+if ( $CurrentCategory != "" )
+{
+	$CurrentCategorySkid = $CurrentCategory->getScid();
+}
+?>
+
+<?php if ( $_collectionSize && $tmpHtml = $this->getChildHtml( 'block_category_above_collection' ) ): ?>
+	<div class="block_category_above_collection std"><?php echo $tmpHtml; ?></div>
+<?php endif; ?>
+
+<?php if ( !$_collectionSize ): ?>
+	<?php if ( $tmpHtml = $this->getChildHtml( 'block_category_above_empty_collection' ) ): ?>
+		<div class="block_category_above_empty_collection std"><?php echo $tmpHtml; ?></div>
+	<?php else: ?>
+		<p class="note-msg empty-catalog"><?php echo $this->__( 'There are no products matching the selection.' ) ?></p>
+	<?php endif; ?>
+<?php else: ?>
+	<?php if ( !$this->getRequest()->isAjax() ): ?>
+		<div id="ajax-errors" style="display: none;">
+			<ul class="ajax-messages">
+				<li class="error-msg">
+					<ul>
+						<li><span><?php echo $this->__( 'An error occurred, please try again later.' ); ?></span></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div id="loading" style="display: none;">
+			<div class="loading-content">
+				<img class="v-middle" alt="" src="<?php echo $this->getSkinUrl(
+					'images/infortis/_shared/ajax-loader-white.gif'
+				); ?>"> <?php echo $this->__( 'Loading, please wait...' ); ?>
+			</div>
+		</div>
+		<div id="catalog-listing">
+	<?php endif; ?>
+
+	<?php
+	$_helper      = $this->helper( 'catalog/output' );
+	$theme        = $this->helper( 'ultimo' );
+	$helpLabels   = $this->helper( 'ultimo/labels' );
+	$helpTemplate = $this->helper( 'ultimo/template' );
+	$helpImg      = $this->helper( 'infortis/image' );
+
+	//Default image size
+	$imgWidth  = 295;
+	$imgHeight = 295;
+
+	//Aspect ratio settings
+	if ( $theme->getCfg( 'category/aspect_ratio' ) )
+	{
+		$imgHeight = 0;
+	} //Height will be computed automatically (based on width) to keep the aspect ratio
+
+	//Hide toolbar
+	$hideToolbar = false;
+	if ( $this->getHideToolbar() )
+	{
+		$hideToolbar = true;
+	}
+	?>
+
+	<div class="category-products">
+	<?php if ( !$hideToolbar ): ?>
+		<?php echo $this->getToolbarHtml() ?>
+	<?php endif; ?>
+	<?php if ( $this->getMode() != 'grid' ): //List mode {?>
+
+		<?php }
+	else: //Grid mode {?>
+
+		<?php
+		//Get grid configuration array
+		$gc = $theme->getCfgGroup( 'category_grid' );
+
+		//Get number of columns (from parameter or from theme config)
+		$columnCount = 3;
+		if ( $this->getGridColumnCount() )
+		{
+			$columnCount = $this->getGridColumnCount();
+		}
+		else
+		{
+			$columnCount = $gc['column_count'];
+		}
+		//Grid classes
+		$gridClasses = '';
+		if ( $gc['display_name'] == 2 && $gc['display_name_single_line'] == true )
+		{
+			$gridClasses .= ' single-line-name';
+		}
+		if ( $gc['centered'] )
+		{
+			$gridClasses .= ' centered';
+		}
+		if ( $gc['hover_effect'] )
+		{
+			$gridClasses .= ' hover-effect';
+		}
+		if ( $gc['equal_height'] )
+		{
+			$gridClasses .= ' equal-height';
+		}
+
+		//Size of grid elements
+		if ( $gc['elements_size'] )
+		{
+			$gridClasses .= ' size-' . $gc['elements_size'];
+		}
+		else
+		{
+			//Calculate size based on number of columns
+			if ( $columnCount >= 6 )
+			{
+				$gridClasses .= ' size-xs';
+			}
+			elseif ( $columnCount >= 4 )
+			{
+				$gridClasses .= ' size-s';
+			}
+		}
+
+		//Container "actions" at the bottom of the grid item stores button and add-to links
+		//If at least one of those elements was set as "Display on hover" but no element was set as "Display":
+		//apply appropriate classes to the container.
+		$actionsClasses = '';
+		if ( $gc['display_addtocart'] == 1 || ($gc['display_addtolinks'] == 1 && !$gc['addtolinks_simple']) )
+		{
+			$actionsClasses = ' display-onhover';
+		}
+		if ( $gc['display_addtocart'] == 2 || ($gc['display_addtolinks'] == 2 && !$gc['addtolinks_simple']) )
+		{
+			$actionsClasses = '';
+		}
+		?>
+		<ul class="products-grid category-products-grid itemgrid itemgrid-adaptive itemgrid-<?php echo $columnCount; ?>col<?php if ( $gridClasses )
+		{
+			echo $gridClasses;
+		} ?>">
+		<?php // Set GLobal Color Box Variables ?>
+		<?php
+		$attr            = Mage::getModel( 'catalog/product' )->getResource()->getAttribute( "color" );
+		$attid           = $attr->getId();
+		$_collection     = Mage::getResourceModel( 'eav/entity_attribute_option_collection' )
+		                       ->setAttributeFilter( $attid )->setStoreFilter( 0 )->load();
+		$mediaApi        = Mage::getModel( "catalog/product_attribute_media_api" );
+		$javascriptarray = [ ];
+		$now             = new DateTime();
+		$time            = $now->getTimestamp();
+		$cache           = Mage::app()->getCache();
+		$storeid         = Mage::app()->getStore()->getStoreId();
+		?>
+
+		<?php foreach ( $_productCollection as $_product ): ?>
+			<li class="item">
+
+			<?php /* Get New ColorBoxes */
+			if ( $_product->getTypeId() == "configurable" ): ?>
+				<?php
+				$attributeOptions = array();
+				$parprodid        = $_product->getId();
+				$sortedvalues     = [ ];
+				$uniqekey         = $_product->getNumber() . '-' . $storeid;
+
+				if ( !$data = $cache->load( $uniqekey ) )
+				{
+					// Get ChildCollection
+					$childcollection = Mage::getModel( 'catalog/product_type_configurable' )->setProduct( $_product )
+					                       ->getUsedProductCollection()
+					                       ->addStoreFilter( $storeid )
+					                       ->addAttributeToSelect(
+						                       array(
+							                       'status', 'color', 'style', 'name', 'number', 'cat_hira_color',
+							                       'color_code', 'url_seo_key', 'price', 'special_price', 'final_price',
+							                       'special_to_date', 'news_to_date'
+						                       )
+					                       )
+					                       ->addFilterByRequiredOptions();
+
+					// Get AttributeCollectionArray
+					$productAttributeOptions = $_product->getTypeInstance( true )->getConfigurableAttributesAsArray(
+						$_product
+					);
+					$style                   = Mage::getModel( 'catalog/product' )
+					                               ->getCollection()
+					                               ->addAttributeToSelect( 'style' )
+					                               ->addAttributeToFilter(
+						                               'entity_id', array( 'eq' => $_product->getId() )
+					                               )
+					                               ->getFirstItem()
+					                               ->getStyle();
+
+					// Create Array for Cache from Collection
+					$productsarray = array();
+
+					$check            = [ ];
+					$checkcolorimages = [ ];
+					// Search all Colors they are visible and saleable
+					foreach ( $childcollection as $productt )
+					{
+						if ( $productt->getIsInStock() == 1 && $productt->getStatus() == 1 )
+						{
+							$colorvalue = $productt->getColor();
+							if ( !in_array( $colorvalue, $check ) )
+							{
+								$check[] = $productt->getColor();
+							}
+							$colorcode = $productt->getColorCode();
+							if ( !in_array( $colorcode, $checkcolorimages ) )
+							{
+								$curprodid = $productt->getId();
+
+								//Get all Color Images
+								$items = $mediaApi->items( $curprodid );
+								$img1  = "";
+								$img2  = "";
+								foreach ( $items as $image )
+								{
+									if ( in_array( "small_image", $image['types'] ) )
+									{
+										$img1 = $image['file'];
+									}
+									if ( $image['position'] == 2 )
+									{
+										$img2 = $image['file'];
+									}
+									if ( $img1 != "" && $img2 != "" )
+									{
+										break;
+									}
+								}
+								if ( $img2 == "" )
+								{
+									$var     = Mage::helper( 'catalog/image' )
+									               ->init( $productt, "small_image", $img1 )
+									               ->keepAspectRatio( true )
+									               ->keepFrame( true )
+									               ->setQuality( 80 )
+									               ->resize( $imgWidth, $imgHeight );
+									$urlimg1 = "" . $var . "";
+									$urlimg2 = $urlimg1;
+								}
+								else
+								{
+									$var     = Mage::helper( 'catalog/image' )
+									               ->init( $productt, "small_image", $img1 )
+									               ->keepAspectRatio( true )
+									               ->keepFrame( true )
+									               ->setQuality( 80 )
+									               ->resize( $imgWidth, $imgHeight );
+									$urlimg1 = "" . $var . "";
+									$var     = Mage::helper( 'catalog/image' )
+									               ->init( $productt, "small_image", $img2 )
+									               ->keepAspectRatio( true )
+									               ->keepFrame( true )
+									               ->setQuality( 80 )
+									               ->resize( $imgWidth, $imgHeight );
+									$urlimg2 = "" . $var . "";
+								}
+								// Get Color Specific URL
+								$requestpath = Mage::getBaseUrl() . $productt->getUrlSeoKey();
+								$name        = $productt->getName();
+
+								//Get Pricebox
+								$pricehtml = $this->getPriceHtml( $productt, true );
+
+								//Get Flag for Sale
+								if ( $time <= strtotime( $productt->getSpecialToDate() )
+								     && $productt->getSpecialToDate() != ""
+								)
+								{
+									$setsaleflag = "Yes";
+								}
+								else
+								{
+									$setsaleflag = "No";
+								}
+								if ( $time <= strtotime( $productt->getNewsToDate() )
+								     && $productt->getNewsToDate() != ""
+								)
+								{
+									$setnewflag = "Yes";
+								}
+								else
+								{
+									$setnewflag = "No";
+								}
+
+								//Get Position in Categorie
+								$color_position = 300000;
+								$cathiracolorr  = $productt->getCatHiraColor();
+								if ( isset($CurrentCategorySkid) && $cathiracolorr != "" )
+								{
+									$CatHiraColor = json_decode( $cathiracolorr, true );
+									foreach ( $CatHiraColor as $value )
+									{
+										if ( $value['SKID'] == $CurrentCategorySkid )
+										{
+											$color_position = $value['Pos'];
+											break;
+										}
+									}
+								}
+								$javascriptarray[ $parprodid ][ $colorvalue ] = array(
+									$requestpath, $urlimg1, $urlimg2, $name, $pricehtml, $setsaleflag, $setnewflag
+								);
+								$sortedvalues[ $colorvalue ]                  = $color_position;
+								$checkcolorimages[]                           = $colorcode;
+
+								//Get Loop Child Data for Caching
+								$productsarray[ $parprodid ]['childdata'][ $curprodid ]['cat_hira_color']
+									                                                                  = $cathiracolorr;
+								$productsarray[ $parprodid ]['childdata'][ $curprodid ]['colorvalue'] = $colorvalue;
+							}
+						}
+					}
+					// Gett all Color Store Specific Names
+					foreach ( $productAttributeOptions as $productAttribute )
+					{
+						if ( $productAttribute['attribute_code'] == "color" )
+						{ /* Color Attribute Code */
+							foreach ( $productAttribute['values'] as $attribute )
+							{
+								foreach ( $_collection->toOptionArray() as $adminattribute )
+								{
+									if ( $adminattribute["value"] == $attribute['value_index']
+									     && in_array(
+											$adminattribute["value"], $check
+										)
+									)
+									{
+										$attributeOptions[ $attribute['value_index'] ]
+											= array(
+											"FrontendLabel" => $attribute['store_label'],
+											"HexCode"       => $adminattribute["label"]
+										);
+									}
+								}
+							}
+							break;
+						}
+					}
+					// Set Data for Caching
+					$productsarray[ $parprodid ]['prod_data']       = $javascriptarray[ $parprodid ];
+					$productsarray[ $parprodid ]['used_attributes'] = $attributeOptions;
+					$productsarray[ $parprodid ]['style']           = $style;
+
+					//Save Collection as Array in Cache
+					$data = serialize( $productsarray[ $parprodid ] );
+					$cache->save( $data, $uniqekey, array( $uniqekey ), 31449600 );
+				}
+				else
+				{
+					//Set Cached Data
+					$productsarray[ $parprodid ]   = unserialize( $data );
+					$javascriptarray[ $parprodid ] = $productsarray[ $parprodid ]['prod_data'];
+					$attributeOptions              = $productsarray[ $parprodid ]['used_attributes'];
+					$style                         = $productsarray[ $parprodid ]['style'];
+
+					// Calculate new Order as they cannot be cached
+					foreach ( $productsarray[ $parprodid ]['childdata'] as $child )
+					{
+						$color_position = 300000;
+						$cathiracolorr  = $child['cat_hira_color'];
+						$colorvalue     = $child['colorvalue'];
+						if ( isset($CurrentCategorySkid) && $cathiracolorr != "" )
+						{
+							$CatHiraColor = json_decode( $cathiracolorr, true );
+							foreach ( $CatHiraColor as $value )
+							{
+								if ( $value['SKID'] == $CurrentCategorySkid )
+								{
+									$color_position = $value['Pos'];
+									break;
+								}
+							}
+						}
+						$sortedvalues[ $colorvalue ] = $color_position;
+					}
+				}
+				?>
+				<?php
+				//Sort Order for Values
+				asort( $sortedvalues );
+				// Get First Item for Gallery
+				$tmp               = array_keys( $sortedvalues );
+				$firstcolorvalueid = reset( $tmp );
+
+
+				?>
+				<div class="product-image-wrapper" style="max-width:<?php echo $imgWidth; ?>px;">
+
+					<a href="<?php echo $javascriptarray[ $parprodid ][ $firstcolorvalueid ][0]; ?>"
+					   title="<?php echo $this->stripTags(
+						   $this->getImageLabel( $_product, 'small_image' ), null, true
+					   ); ?>" class="product-image">
+						<img src="<?php echo $javascriptarray[ $parprodid ][ $firstcolorvalueid ][1]; ?>"
+						     alt="<?php echo $this->stripTags(
+							     $this->getImageLabel( $_product, 'small_image' ), null, true
+						     ); ?>"/>
+
+						<?php if ( $theme->getCfg( 'category/alt_image' ) ): ?>
+							<?php
+							echo '<img class="alt-img" src="' . $javascriptarray[ $parprodid ][ $firstcolorvalueid ][2]
+							     . '" alt="' . $_product->getName() . '" />';
+							?>
+						<?php endif; ?>
+
+						<?php
+						$tmp = $helpLabels->getLabels( $_product ); //Product labels
+						if ( $javascriptarray[ $parprodid ][ $firstcolorvalueid ][5] == "Yes" )
+						{
+							$tmp = str_replace( "top-right customhide", "top-right", $tmp );
+						}
+						if ( $javascriptarray[ $parprodid ][ $firstcolorvalueid ][6] == "Yes" )
+						{
+							$tmp = str_replace( "top-left customhide", "top-left", $tmp );
+						}
+						echo $tmp;
+						?>
+					</a>
+
+					<?php //Add-to links
+					if ( $gc['display_addtolinks'] != 0 && $gc['addtolinks_simple'] )
+					{
+						if ( $gc['display_addtolinks'] == 1 ) //Display on hover
+						{
+							echo $helpTemplate->getCategoryAddtoLinksComplex_2(
+								$_product, $this->getAddToCompareUrl( $_product ),
+								'addto-links-icons addto-onimage display-onhover'
+							);
+						}
+						else //Always display
+						{
+							echo $helpTemplate->getCategoryAddtoLinksComplex_2(
+								$_product, $this->getAddToCompareUrl( $_product ), 'addto-links-icons addto-onimage'
+							);
+						}
+					}
+					?>
+
+				</div> <!-- end: product-image-wrapper -->
+				<div class="color-boxes">
+					<ul class="color-option-list">
+						<?php $isFirst = true; ?>
+						<?php //foreach($attributeOptions as $valueid => $options): ?>
+						<?php foreach ( $sortedvalues as $key => $value ): ?>
+							<?php if ( isset($attributeOptions[ $key ]) ): ?>
+								<li class="color_item <?php echo $key; ?> <?php if ( $isFirst )
+								{
+									echo 'active';
+									$isFirst = false;
+								}; ?>">
+									<a href="javascript:void(0)" class="color_block"
+									   alt="<?php echo $attributeOptions[ $key ]["FrontendLabel"]; ?>"
+									   title="<?php echo $attributeOptions[ $key ]["FrontendLabel"]; ?>"
+									   style="background-color:#<?php echo $attributeOptions[ $key ]["HexCode"]; ?>"
+									   onclick="updatelistimage.call(this,<?php echo $parprodid . ',' . $key; ?>);"></a>
+								</li>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+
+				<div class="product-infos">
+					<h2 class="product-name"><a
+							href="<?php echo $javascriptarray[ $parprodid ][ $firstcolorvalueid ][0]; ?>"
+							title="<?php echo ucwords(
+								$this->stripTags( $javascriptarray[ $parprodid ][ $firstcolorvalueid ][3], null, true )
+							); ?>"><?php echo ucwords( $javascriptarray[ $parprodid ][ $firstcolorvalueid ][3] ); ?></a><br><span
+							class="name-style"><?php echo ucwords( $style ); ?></span></h2>
+
+					<?php if ( $_product->getRatingSummary() ): ?>
+						<?php if ( $gc['display_rating'] == 1 ): //Display on hover {?>
+							<div class="display-onhover"><?php echo $this->getReviewsSummaryHtml(
+									$_product, 'short'
+								) ?></div>
+							<?php }
+						elseif ( $gc['display_rating'] == 2 ): //Always display {?>
+							<?php echo $this->getReviewsSummaryHtml( $_product, 'short' ) ?>
+							<?php } endif; ?>
+					<?php endif; ?>
+
+					<?php if ( $gc['display_price'] == 1 )
+					{
+						echo '<div class="display-onhover">';
+					} ?>
+					<?php
+					//echo $this->getPriceHtml($_product, true);
+					echo $javascriptarray[ $parprodid ][ $firstcolorvalueid ][4];
+					?>
+					<?php if ( $gc['display_price'] == 1 )
+					{
+						echo '</div>';
+					} ?>
+
+					<?php
+					//If at least one element was set as "Display on hover" but no element was set as "Display":
+					//aggregate classes from those elements and apply them to the "actions" container.
+					$actionsClasses = '';
+					if ( $gc['display_addtocart'] == 1
+					     || ($gc['display_addtolinks'] == 1
+					         && !$gc['addtolinks_simple'])
+					)
+					{
+						$actionsClasses = ' display-onhover';
+					}
+					if ( $gc['display_addtocart'] == 2
+					     || ($gc['display_addtolinks'] == 2
+					         && !$gc['addtolinks_simple'])
+					)
+					{
+						$actionsClasses = '';
+					}
+					?>
+				</div>
+
+			<?php else: ?> <!-- Konfigurierbares Produkt Ende -->
+
+				<div class="product-image-wrapper" style="max-width:<?php echo $imgWidth; ?>px;">
+
+					<a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags(
+						$this->getImageLabel( $_product, 'small_image' ), null, true
+					); ?>" class="product-image">
+						<img src="<?php echo $helpImg->getImg( $_product, $imgWidth, $imgHeight, 'small_image' ); ?>"
+						     alt="<?php echo $this->stripTags(
+							     $this->getImageLabel( $_product, 'small_image' ), null, true
+						     ); ?>"/>
+
+						<?php if ( $theme->getCfg( 'category/alt_image' ) ): ?>
+							<?php echo $theme->getAltImgHtml( $_product, $imgWidth, $imgHeight ); ?>
+						<?php endif; ?>
+
+						<?php
+						$tmp = $helpLabels->getLabels( $_product ); //Product labels
+						if ( $javascriptarray[ $parprodid ][ $firstcolorvalueid ][5] == "Yes" )
+						{
+							$tmp = str_replace( "top-right customhide", "top-right", $tmp );
+						}
+						if ( $javascriptarray[ $parprodid ][ $firstcolorvalueid ][6] == "Yes" )
+						{
+							$tmp = str_replace( "top-left customhide", "top-left", $tmp );
+						}
+						echo $tmp;
+						?>
+					</a>
+
+					<?php //Add-to links
+					if ( $gc['display_addtolinks'] != 0 && $gc['addtolinks_simple'] )
+					{
+						if ( $gc['display_addtolinks'] == 1 ) //Display on hover
+						{
+							echo $helpTemplate->getCategoryAddtoLinksComplex_2(
+								$_product, $this->getAddToCompareUrl( $_product ),
+								'addto-links-icons addto-onimage display-onhover'
+							);
+						}
+						else //Always display
+						{
+							echo $helpTemplate->getCategoryAddtoLinksComplex_2(
+								$_product, $this->getAddToCompareUrl( $_product ), 'addto-links-icons addto-onimage'
+							);
+						}
+					}
+					?>
+
+				</div> <!-- end: product-image-wrapper -->
+
+				<div class="product-infos">
+
+					<h2 class="product-name"><a href="<?php echo $_product->getProductUrl(); ?>"
+					                            title="<?php echo $this->stripTags(
+						                            $_product->getName(), null, true
+					                            ) ?>"><?php echo $_helper->productAttribute(
+								$_product, $_product->getName(), 'name'
+							) ?></a><br><span class="name-style">"<?php echo $style; ?>"</span></h2>
+
+					<?php if ( $_product->getRatingSummary() ): ?>
+						<?php if ( $gc['display_rating'] == 1 ): //Display on hover {?>
+							<div class="display-onhover"><?php echo $this->getReviewsSummaryHtml(
+									$_product, 'short'
+								) ?></div>
+							<?php }
+						elseif ( $gc['display_rating'] == 2 ): //Always display {?>
+							<?php echo $this->getReviewsSummaryHtml( $_product, 'short' ) ?>
+							<?php } endif; ?>
+					<?php endif; ?>
+
+					<?php if ( $gc['display_price'] == 1 )
+					{
+						echo '<div class="display-onhover">';
+					} ?>
+					<?php
+					//echo $this->getPriceHtml($_product, true);
+					echo $javascriptarray[ $parprodid ][ $firstcolorvalueid ][4];
+					?>
+					<?php if ( $gc['display_price'] == 1 )
+					{
+						echo '</div>';
+					} ?>
+
+					<?php
+					//If at least one element was set as "Display on hover" but no element was set as "Display":
+					//aggregate classes from those elements and apply them to the "actions" container.
+					$actionsClasses = '';
+					if ( $gc['display_addtocart'] == 1
+					     || ($gc['display_addtolinks'] == 1
+					         && !$gc['addtolinks_simple'])
+					)
+					{
+						$actionsClasses = ' display-onhover';
+					}
+					if ( $gc['display_addtocart'] == 2
+					     || ($gc['display_addtolinks'] == 2
+					         && !$gc['addtolinks_simple'])
+					)
+					{
+						$actionsClasses = '';
+					}
+					?>
+				</div>
+
+			<?php endif; ?> <!-- Einfaches Produkt Ende -->
+
+			<div class="actions clearer<?php echo $actionsClasses; ?>">
+				<?php //Cart button ?>
+				<?php if ( $gc['display_addtocart'] != 0 ): ?>
+					<?php if ( $_product->isSaleable() ): ?>
+						<button type="button" title="<?php echo $this->__( 'Add to Cart' ) ?>" class="button btn-cart"
+						        onclick="setLocation('<?php echo $this->getAddToCartUrl( $_product ) ?>')">
+							<span><span><?php echo $this->__( 'Add to Cart' ) ?></span></span></button>
+					<?php else: ?>
+						<p class="availability out-of-stock"><span><?php echo $this->__( 'Out of stock' ) ?></span></p>
+					<?php endif; ?>
+				<?php endif; ?>
+
+				<?php //Add-to links
+				if ( $gc['display_addtolinks'] != 0 && !$gc['addtolinks_simple'] )
+				{
+					echo $helpTemplate->getCategoryAddtoLinks(
+						$_product, $this->getAddToCompareUrl( $_product ), 'addto-gaps-right addto-texticons'
+					);
+				}
+				?>
+			</div>
+			<!-- end: actions -->
+			</li>
+		<?php endforeach; ?>
+		</ul>
+		<?php
+		echo '
+        <script type="text/javascript" content="text/javascript">
+            var productimagelist = ' . json_encode( $javascriptarray ) . ';
+        </script>
+    ';
+		?>
+		<?php } endif; //end: if grid mode ?>
+
+	<?php if ( !$hideToolbar ): ?>
+		<div class="toolbar-bottom">
+			<?php echo $this->getToolbarHtml() ?>
+		</div>
+	<?php endif; ?>
+	</div>
+	<?php if ( !$this->getRequest()->isAjax() ): ?>
+		</div>
+	<?php endif; ?>
+<?php endif; ?>
+
+<?php if ( $_collectionSize && $tmpHtml = $this->getChildHtml( 'block_category_below_collection' ) ): ?>
+	<div class="block_category_below_collection std"><?php echo $tmpHtml; ?></div>
+<?php endif; ?>
+
+<?php if ( $this->helper( 'catalin_seo' )->isAjaxEnabled() && !$this->getRequest()->isAjax() ): ?>
+	<script type="text/javascript">
+		//<![CDATA[
+		function pushState(data, link, replace) {
+			var History = window.History;
+			if (!History.enabled) {
+				return false;
+			}
+
+			if (replace) {
+				History.replaceState(data, document.title, link);
+			} else {
+				History.pushState(data, document.title, link);
+			}
+		}
+
+		function handleEvent(el, event) {
+			var url, fullUrl;
+			if (typeof el === 'string') {
+				url = el;
+			} else if (el.tagName.toLowerCase() === 'a') {
+				url = $(el).readAttribute('href');
+			} else if (el.tagName.toLowerCase() === 'select') {
+				url = $(el).getValue();
+			}
+
+			<?php // Add this to query string for full page caching systems ?>
+			if (url.indexOf('?') != -1) {
+				fullUrl = url + '&isLayerAjax=1';
+			} else {
+				fullUrl = url + '?isLayerAjax=1';
+			}
+
+			$('loading').show();
+			$('ajax-errors').hide();
+
+			pushState(null, url, false);
+			/* FG MODIFY BEGIN */
+			var isTouchDevice = ('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0);
+			if ((jQuery(window).width() < 1025 && isTouchDevice) || (jQuery(window).width() < 769)) {
+				jQuery("html, body").animate({scrollTop: jQuery('#layered-navigation').position().top}, 600, "easeOutCubic");
+			} else {
+				jQuery("html, body").animate({scrollTop: jQuery('#catalog-listing').position().top - 20}, 600, "easeOutCubic");
+			}
+			/* FG MODIFY END */
+			jQuery.ajax({
+				type: "GET",
+				url: fullUrl
+			})
+				.done(function (result) {
+					if (result) {
+						var listing = result.listing;
+						var layer = result.layer;
+
+						jQuery('#catalog-listing .category-products').html(listing);
+						jQuery('#layered-navigation').html(layer);
+						pushState({
+							listing: listing,
+							layer: layer
+						}, url, true);
+						ajaxListener();
+					} else {
+						$('ajax-errors').show();
+					}
+					$('loading').hide();
+				})
+				.always(function (result) {
+					buildlaynav();
+					<?php //Display alternative image ?>
+					jQuery('.products-grid, .products-list').on('mouseenter', '.item', function () {
+						jQuery(this).find(".alt-img").fadeIn(400, "easeOutCubic");
+					}).on('mouseleave', '.item', function () {
+						jQuery(this).find(".alt-img").stop(true).fadeOut(400, "easeOutCubic");
+					});
+					<?php //Display Add To Links ?>
+					setaddtolinksonhover();
+				});
+			/*
+			 new Ajax.Request(fullUrl, {
+			 method: 'get',
+			 evalScripts: true,
+			 evalJS: true,
+			 evalJSON: true,
+			 onSuccess: function(transport) {
+			 var listing = transport.responseJSON.listing.evalScripts();
+			 var layer = transport.responseJSON.layer;
+			 if (transport.responseJSON) {
+			 console.log(listing);
+			 //$('catalog-listing').update(listing);
+			 //$('layered-navigation').update(layer);
+			 pushState({
+			 listing: listing,
+			 layer: layer
+			 }, url, true);
+			 ajaxListener();
+			 } else {
+			 $('ajax-errors').show();
+			 }
+			 $('loading').hide();
+			 },
+			 onComplete: function(){
+			 buildlaynav();
+			<?php //Display alternative image ?>
+			 jQuery('.products-grid, .products-list').on('mouseenter', '.item', function() {
+			 jQuery(this).find(".alt-img").fadeIn(400, "easeOutCubic");
+			 }).on('mouseleave', '.item', function() {
+			 jQuery(this).find(".alt-img").stop(true).fadeOut(400, "easeOutCubic");
+			 });
+			<?php //Display Add To Links ?>
+			 setaddtolinksonhover();
+			 }
+			 });
+			 */
+			if (event) {
+				event.preventDefault();
+			}
+		}
+		function ajaxListener() {
+			var els;
+			els = $$('div.pager a').concat(
+				$$('div.sorter a'),
+				$$('div.pager select'),
+				$$('div.sorter select'),
+				$$('div.block-layered-nav a')
+			);
+			els.each(function (el) {
+				if (el.tagName.toLowerCase() === 'a') {
+					$(el).observe('click', function (event) {
+						handleEvent(this, event);
+					});
+				} else if (el.tagName.toLowerCase() === 'select') {
+					$(el).setAttribute('onchange', '');
+					$(el).observe('change', function (event) {
+						handleEvent(this, event);
+					});
+				}
+			});
+		}
+
+		document.observe("dom:loaded", function () {
+			ajaxListener();
+
+
+			(function (History) {
+				if (!History.enabled) {
+					return false;
+				}
+				if ($('catalog-listing').length) {
+					var listting = $('catalog-listing').innerHTML;
+				} else {
+					var listting = '';
+				}
+				if ($('catalog-listing').length) {
+					var layyer = $('layered-navigation').innerHTML;
+				} else {
+					var layyer = '';
+				}
+				pushState({
+					listing: listting,
+					layer: layyer
+				}, document.location.href, true);
+
+				// Bind to StateChange Event
+				History.Adapter.bind(window, 'popstate', function (event) {
+					if (event.type == 'popstate') {
+						var State = History.getState();
+						if ($('catalog-listing').length) {
+							$('catalog-listing').update(State.data.listing);
+						}
+						if ($('layered-navigation').length) {
+							$('layered-navigation').update(State.data.layer);
+						}
+						ajaxListener();
+					}
+				});
+			})(window.History);
+		});
+
+		//]]>
+	</script>
+<?php endif; ?>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Paypal>
+            <version>0.1.0</version>
+        </Mey_Paypal>
+    </modules>
+    <global>
+        <models>
+            <mey_paypal>
+                <class>Mey_Paypal_Model</class>
+            </mey_paypal>
+            <paypal>
+                <rewrite>
+                    <api_nvp>Mey_Paypal_Model_Api_Nvp</api_nvp>
+                </rewrite>
+            </paypal>
+        </models>
+    </global>
+</config>

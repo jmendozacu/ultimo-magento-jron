@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Csrf>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Mey_Csrf>
+    </modules>
+</config>

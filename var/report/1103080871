@@ -1,0 +1,8 @@
+a:4:{i:0;s:92:"Module "Codekunst_PaymentInformation" requires module "Paymentnetwork_Pnsofortueberweisung".";i:1;s:695:"#0 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\Config.php(849): Mage::throwException('Module "Codekun...')
+#1 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\Config.php(812): Mage_Core_Model_Config->_sortModuleDepends(Array)
+#2 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\Config.php(315): Mage_Core_Model_Config->_loadDeclaredModules()
+#3 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\App.php(414): Mage_Core_Model_Config->loadModules()
+#4 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\App.php(343): Mage_Core_Model_App->_initModules()
+#5 G:\wamp\www\ultimo\app\Mage.php(684): Mage_Core_Model_App->run(Array)
+#6 G:\wamp\www\ultimo\index.php(87): Mage::run('', 'store')
+#7 {main}";s:3:"url";s:89:"/ultimo/index.php/admin/admin/extension_local/index/key/588b62516e0d963e765ebf76f9f12253/";s:11:"script_name";s:17:"/ultimo/index.php";}

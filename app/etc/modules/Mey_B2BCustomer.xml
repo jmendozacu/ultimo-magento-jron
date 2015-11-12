@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_B2BCustomer>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mey_B2B/>
+
+            </depends>
+        </Mey_B2BCustomer>
+    </modules>
+</config>

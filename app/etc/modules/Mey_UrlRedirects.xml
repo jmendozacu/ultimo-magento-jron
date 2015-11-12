@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_UrlRedirects>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Dnd_Patchindexurl/>
+            </depends>
+        </Mey_UrlRedirects>
+    </modules>
+</config>

@@ -1,0 +1,164 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php $theme = Mage::helper('ultimo'); ?>
+<?php //More Header Informations
+header_remove("Pragma");
+$dt = new DateTime('UTC');
+if((int)$dt->format('H') > 0 || (int)$dt->format('m') > 50) {
+    $dt->add(new DateInterval('PT24H'));
+}
+$dt->setTime(0, 50);
+$date = $dt->format('D, d M Y H:i:s \G\M\T');
+
+
+$request = $this->getRequest();
+$module = $request->getModuleName();
+$controller = $request->getControllerName();
+$action = $request->getActionName();
+
+if( ($module == "customer") || ($module == "sales" && $controller == "order" && $action == "history") || ($module == "newsletter" && $controller == "manage") || ($module == "wishlist") || ($module == "onestepcheckout") || ($module == "checkout") || ($module == "ajaxcart") || ($module == "checkoutbyamazon") || ($module == "sofort") || ($module == "SaferpayCw")){
+	header("Cache-Control: no-cache");
+	header_remove("Date");
+	header_remove("Expires");
+}else{
+	header("Cache-Control: public");
+	header("Expires: ".$date);
+	header_remove("Set-Cookie");
+	header("Vary:Accept-Encoding");
+}
+//Debug Header
+header("X-Source: PHP");
+
+?>
+<link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com" />
+
+
+<meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+<?php $sitetitle = ""; $sitedesc = ""; ?>
+<?php if ($theme->getCfgLayout('responsive/responsive')): ?>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<?php endif; ?>
+<?php if ($test = Mage::registry('current_category')): ?>
+	<?php
+		$replaces = array("| Serienname |", "| Series Name |", "| Serienaam |", "| Kollektionen |", "| Collections |", "| Collecties |", "| Kategorien |", "| Categories |", "| Categorieën |");
+		$tmp = str_replace($replaces, "| ", $this->getTitle());
+		$sitetitle = $tmp." | Mey Bodywear | Online-Shop";
+	?>
+<?php endif; ?>
+<?php if ($test = Mage::registry('current_product')): ?>
+	<?php
+		$replaces = array("| Serienname |", "| Series Name |", "| Serienaam |", "| Kollektionen |", "| Collections |", "| Collecties |", "| Kategorien |", "| Categories |", "| Categorieën |");
+		$tmp = str_replace($replaces, "| ", $this->getTitle());
+		$sitetitle = $tmp." | Mey Bodywear | Online-Shop";
+	?>
+	<?php
+		$sitedesc = $test->getDescription();
+	?>
+	<?php
+		$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		if(strpos($url,"catalog/product/view") > 0){
+
+			$childProducturl = Mage::getModel('catalog/product_type_configurable')
+								    ->setProduct($test)
+								    ->getUsedProductCollection()
+			                        ->addStoreFilter(Mage::app()->getStore()->getStoreId())
+			                        ->addAttributeToSelect(array('url_seo_key'))
+			                        ->addFilterByRequiredOptions()
+									->getFIrstItem()
+									->getUrlSeoKey();
+			print_r('<link rel="canonical" href="'.Mage::getBaseUrl().$childProducturl.'"/>');
+		}
+	?>
+<?php endif; ?>
+<?php if ($sitetitle != ""): ?>
+	<title><?php echo $sitetitle; ?></title>
+<?php else: ?>
+	<title><?php echo $this->getTitle(); ?></title>
+<?php endif; ?>
+<?php if ($sitedesc != ""): ?>
+	<meta name="description" content="<?php echo strip_tags(htmlspecialchars($sitedesc)) ?>" />
+<?php else: ?>
+	<meta name="description" content="<?php echo strip_tags(htmlspecialchars($this->getDescription())) ?>" />
+<?php endif; ?>
+
+<meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+<meta name="google-site-verification" content="YqB2bzJvnYV8IeGtBSRXUAS_TcsVVT3qqB3UHe6oVHM" />
+<?php if($this->getAction()->getFullActionName() != 'catalog_category_view'): // On category pages the robots meta tag is filled via rel_prev_next.phtml ?>
+<meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+<?php endif ?>
+<link rel="icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+<link rel="shortcut icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+<?php
+	$skinUrl = $this->getSkinUrl('');
+?>
+
+<!--[if lt IE 7]>
+<script type="text/javascript">
+//<![CDATA[
+    var BLANK_URL = '<?php echo $this->helper('core/js')->getJsUrl('blank.html') ?>';
+    var BLANK_IMG = '<?php echo $this->helper('core/js')->getJsUrl('spacer.gif') ?>';
+//]]>
+</script>
+<![endif]-->
+
+<?php echo $this->getCssJsHtml() ?>
+<?php if($module == "onestepcheckout"): ?>
+	<script type="text/javascript" src="<?php echo $this->getSkinUrl('customweb/saferpaycw/checkout.js').'?v=1.3.139'; ?>"></script>
+<?php endif; ?>
+<?php echo $this->getLayout()->createBlock('core/template', 'head.theme.scripts')->setTemplate('page/html/head_theme_scripts.phtml')->toHtml(); ?>
+<?php echo $this->getChildHtml() ?>
+<?php echo $this->helper('core/js')->getTranslatorScript() ?>
+<script type="text/javascript">
+    //<![CDATA[
+        Translator.add('Warenkorb wird aktualisiert.', '<?php echo $this->__("Warenkorb wird aktualisiert."); ?>');
+        Translator.add("Oh-oh Fehler!", '<?php echo $this->__("Oh-oh Fehler!"); ?>');
+        Translator.add("Aktualisierungsfehler", "<?php echo $this->__("Aktualisierungsfehler") ?>");
+        Translator.add("Artikel wurde in den Warenkorb gelegt.", '<?php echo $this->__("Artikel wurde in den Warenkorb gelegt."); ?>');
+    //]]>
+</script>
+<?php echo $this->getIncludes() ?>
+
+
+
+<?php //Include Google Fonts
+	$amp = '&amp;';
+	$charSubset = '';
+	if ($subsets = $theme->getCfgDesign('font/primary_char_subset'))
+	{
+		$charSubset = "{$amp}subset={$subsets}";
+	}
+
+	$fontWeight = '';
+	if ($weight = $theme->getCfgDesign('font/primary_font_weight'))
+	{
+		$fontWeight = ':' . $weight;
+	}
+?>
+<?php if ($theme->getCfgDesign('font/primary_font_family_group') == 'google'): ?>
+	<link href='//fonts.googleapis.com/css?family=<?php echo str_replace(' ', '+', $theme->getCfgDesign('font/primary_font_family'));
+		echo $fontWeight; echo $charSubset; ?>' rel='stylesheet' type='text/css' />
+<?php endif;?>

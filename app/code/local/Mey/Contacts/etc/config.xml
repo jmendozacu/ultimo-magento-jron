@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Contacts>
+            <version>0.1.0</version>
+        </Mey_Contacts>
+    </modules>
+    <global>
+    </global>
+    <frontend>
+        <routers>
+            <contacts>
+                <args>
+                    <modules>
+                        <mey_contacts before="Mage_Contacts">Mey_Contacts</mey_contacts>
+                    </modules>
+                </args>
+            </contacts>
+        </routers>
+    </frontend>
+</config>

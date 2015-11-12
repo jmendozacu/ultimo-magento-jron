@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_GoogleTagManagerData>
+            <version>0.1.0</version>
+        </Mey_GoogleTagManagerData>
+    </modules>
+    <global>
+        <models>
+            <mey_googletagmanagerdata>
+                <class>Mey_GoogleTagManagerData_Model</class>
+            </mey_googletagmanagerdata>
+        </models>
+        <events>
+            <cvm_googletagmanager_get_datalayer>
+                <observers>
+                    <mey_googletagmanagerdata>
+                        <class>mey_googletagmanagerdata/observer</class>
+                        <method>appendToDataLayer</method>
+                        <type>singleton</type>
+                    </mey_googletagmanagerdata>
+                </observers>
+            </cvm_googletagmanager_get_datalayer>
+        </events>
+    </global>
+</config>

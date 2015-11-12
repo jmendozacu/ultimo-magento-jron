@@ -1,0 +1,492 @@
+<?php
+/**
+ * Product view template
+ *
+ * @see Mage_Catalog_Block_Product_View
+ * @see Mage_Review_Block_Product_View
+ */
+?>
+<?php
+	$cache = Mage::app()->getCache();
+	$_helper = $this->helper('catalog/output');
+	$_product = $this->getProduct();
+	$theme = $this->helper('ultimo');
+
+	//CSS classes based on product type
+	$productTypeId = $_product->getTypeId();
+	$productTypeClasses = '';
+	if ($productTypeId === 'grouped') {
+		$productTypeClasses .= ' is-type-grouped';
+	}
+
+$helperLabels = $this->helper( 'ultimo/labels' );
+$showBluesign = $helperLabels->isBluesign( $_product );
+
+
+	// Get URL Parameter for Jquery
+	if($_product->getTypeId() == 'configurable'){
+	  	// Get Current Preselected Color
+		$table = array(
+	        'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
+	        'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'Ae', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+	        'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
+	        'Õ'=>'O', 'Ö'=>'Oe', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'Ue', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
+	        'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'ae', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
+	        'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
+	        'ô'=>'o', 'õ'=>'o', 'ö'=>'oe', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
+	        'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-', 'ü' => 'ue');
+
+  		$productAttributeOptions = $_product->getTypeInstance(true)->getConfigurableAttributesAsArray($_product);
+	  	$coloroptions = $productAttributeOptions[0]["values"];
+	  	$colorvaluelist = array();
+  		// Get All Product Options
+  		foreach ($coloroptions as $key => $value) {
+	      $name = $value["store_label"];
+	      $name = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $name);
+	      $name = strtolower(strtr($name, $table));
+	      $name = trim(preg_replace('/[^a-z0-9\-]{1,}/', '', $name), '-');
+	      $colorvaluelist[$value["value_index"]] = $name;
+  		}
+  		// Get Color Parameter from URL
+  		//$selectedcolorlist = explode("-", $_SERVER['REQUEST_URI']);
+
+  		// ONLY FOR PROFILING
+		$tmp = $_SERVER['REQUEST_URI'];
+  		$tmp = str_replace("?profile=1", "", $tmp);
+  		$selectedcolorlist = explode("-", $tmp);
+
+	  	$colorcoder = explode("?", end($selectedcolorlist));
+		$activecolorcode = $colorcoder[0];
+	  	prev($selectedcolorlist);
+	  	$colorpart = "";
+	  	$valueid = 0;
+	  	for ($i=0; $i < 3 ; $i++) {
+	  		if($i == 0){
+	  			$colorpart = prev($selectedcolorlist);
+	  		}else{
+	  			$colorpart = prev($selectedcolorlist)."-".$colorpart;
+	  		}
+	  		if($tmp = array_search($colorpart, $colorvaluelist)){
+	  			$valueid = $tmp;
+	  			break;
+	  		}
+	  	}
+		$attrid = $productAttributeOptions[0]["attribute_id"];
+	}else{
+		$activecolorcode = 0;
+	}
+
+    //Setting up Cached Information
+    $storeid = Mage::app()->getStore()->getStoreId();
+    $uniqekey = $_product->getNumber().'-'.$activecolorcode.'-'.$storeid;
+    $uniqegroup = $_product->getNumber().'-'.$storeid;
+    $productcache = array();
+
+    if( ! $data = $cache->load($uniqekey)){
+    	$productcache['jsonconfig'] = $this->getJsonConfig();
+    	$productcache['media'] = $this->getChildHtml('media');
+		$productcache['product_type_data'] = $this->getChildHtml('product_type_data');
+		$productcache['addto'] = $this->getChildHtml('addto');
+		$productcache['product_additional_data'] = $this->getChildHtml('product_additional_data');
+		$productcache['info_tabs'] = $this->getChildHtml('info_tabs');
+
+    	// Caching Related and Upsell Products
+		//Related products. $productcache['related'] is set only if related products (or replacement) exist
+		$replaceRelated = $theme->getCfg('product_page/replace_related');
+		if ($replaceRelated == 1) //don't replace with static block
+		{
+			if ($tmpHtml = trim($this->getChildHtml('catalog.product.related')))
+				$productcache['related'] = $tmpHtml;
+			//$productcache['related'] = trim($this->getChildHtml('catalog.product.related'));
+		}
+		elseif ($replaceRelated == 2) //if related is empty, replace with static block
+		{
+			if ($tmpHtml = trim($this->getChildHtml('catalog.product.related')))
+				$productcache['related'] = $tmpHtml;
+			else //related empty
+				if ($tmpHtml = $this->getChildHtml('block_product_replace_related'))
+					$productcache['related'] = '<div class="block_product_replace_related">'. $tmpHtml .'</div>';
+		}
+		elseif ($replaceRelated == 3) //replace with static block
+		{
+			if ($tmpHtml = $this->getChildHtml('block_product_replace_related'))
+				$productcache['related'] = '<div class="block_product_replace_related">'. $tmpHtml .'</div>';
+		}
+
+		//Up-sell products. $productcache['upsell'] is set only if up-sell products (or replacement) exist
+		$replaceUpsell = $theme->getCfg('product_page/replace_upsell');
+		if ($replaceUpsell == 1) //don't replace with static block
+		{
+			if ($tmpHtml = trim($this->getChildHtml('upsell_products')))
+				$productcache['upsell'] = $tmpHtml;
+			//$productcache['upsell'] = $this->getChildHtml('upsell_products');
+		}
+		elseif ($replaceUpsell == 2) //if upsell is empty, replace with static block
+		{
+			if ($tmpHtml = trim($this->getChildHtml('upsell_products')))
+				$productcache['upsell'] = $tmpHtml;
+			else //upsell empty
+				if ($tmpHtml = $this->getChildHtml('block_product_replace_upsell'))
+					$productcache['upsell'] = '<div class="block_product_replace_upsell">'. $tmpHtml .'</div>';
+		}
+		elseif ($replaceUpsell == 3) //replace with static block
+		{
+			if ($tmpHtml = $this->getChildHtml('block_product_replace_upsell'))
+				$productcache['upsell'] = '<div class="block_product_replace_upsell">'. $tmpHtml .'</div>';
+		}
+
+		//Caching Option Wrapper
+		if ($_product->isSaleable() && $this->hasOptions()){
+			if($container1_html = $this->getChildChildHtml('container1', '', true, true)){
+				$productcache['container1'] = $container1_html;
+			}else{
+				$productcache['container1'] = "";
+			}
+			if ($container2_html = $this->getChildChildHtml('container2', '', true, true)){
+				$productcache['container2'] = $container2_html;
+			}else{
+				$productcache['container2'] = "";
+			}
+		}
+
+        //Save Collection as Array in Cache
+        $data = serialize($productcache);
+        $cache->save($data, $uniqekey, array($uniqegroup),31449600);
+    }else{
+        //Set Cached Data
+        $productcache = unserialize($data);
+    }    
+?>
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $productcache['jsonconfig'] ?>);
+    var upsellForms = {};
+    var spConfigs = {};
+    var optionsPrices = {};
+</script>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<span style="display:none;" class="scp-please-wait" id="loading">
+	<div class="loading-content">
+		<img src="<?php echo $this->getSkinUrl('images/infortis/_shared/ajax-loader-white.gif') ?>" class="v-middle" alt="" /><?php echo $this->__('Loading, please wait...') ?>
+	</div>
+</span>
+<div class="product-view" id="product-view-<?php echo $_product->getId() ?>" itemscope itemtype="http://schema.org/Product">
+	<div class="no-display">
+		<?php // hidden Attributes for Rich-Snippets ?>
+		<span itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <meta itemprop="priceCurrency" content="<?php echo Mage::app()->getStore()->getCurrentCurrencyCode();?>" />
+            <span itemprop="price"><?php echo round($_product->getFinalPrice(), 2);?></span>
+            <span itemprop="url"><?php echo Mage::getBaseUrl().$_product->getUrlSeoKey();?></span>
+       </span>
+	</div>
+<a class="back-to-category" href="javascript:history.back()">&lt; <?php echo $this->__('back to overview'); ?></a>
+    <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+    <div class="product-view-wrapper clearer">
+	    	<?php echo $this->getBlockHtml('formkey'); ?>
+	        <div class="no-display">
+	            <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+		        <input type="hidden" name="ean" id="productean" value="<?php echo $_product->getEan() ?>" class="hide" />
+	            <input type="hidden" name="related_product" id="related-products-field" value="" />
+	        </div>
+	        
+	    	<?php
+								
+				//Assign related products to selected position
+				if (isset($productcache['related']))
+				{
+					$relatedPosition = $theme->getCfg('product_page/related_position');
+					//TODO:remove: $relatedPosition = 11;
+					switch ($relatedPosition)
+					{
+						case 10:
+							$p['secondaryCol'][0] = $productcache['related'];
+							break;
+						case 11:
+							$p['secondaryCol'][1] = $productcache['related'];
+							break;
+						case 20:
+							$p['collatSecondaryCol'] = $productcache['related'];
+							break;
+					}
+				}
+				
+				
+				
+				//Width (in grid units) of product page sections
+				$imgColUnits					= $theme->getCfg('product_page/image_column');
+				$primaryColUnits				= $theme->getCfg('product_page/primary_column');
+				$secondaryColUnits				= $theme->getCfg('product_page/secondary_column');
+				$container2ColUnits				= $imgColUnits + $primaryColUnits;
+				$collatPrimaryColUnits			= $imgColUnits + $primaryColUnits;
+				$collatSecondaryColUnits		= $secondaryColUnits;
+
+				//If no secondary column
+				if (empty($secondaryColUnits))
+				{
+					$primaryColUnits			+= 12 - ($imgColUnits + $primaryColUnits);
+					$container2ColUnits			= $imgColUnits + $primaryColUnits;
+					$collatPrimaryColUnits		= 9;
+					$collatSecondaryColUnits	= 3;
+				}
+				
+				//If no related products, stretch collateral primary column
+				if (!isset($productcache['related']))
+				{
+					$container2ColUnits			= 12;
+					$collatPrimaryColUnits		= 12;
+					$collatSecondaryColUnits	= 0;
+				}
+				elseif (!isset($p['secondaryCol']))
+				{
+					$container2ColUnits 		= 12;
+				}
+
+				//Grid classes
+				$imgColGridClass				= 'grid12-' . $imgColUnits;
+				$primaryColGridClass			= 'grid12-' . $primaryColUnits;
+				$secondaryColGridClass			= 'grid12-' . $secondaryColUnits;
+				$container2ColGridClass			= 'grid12-' . $container2ColUnits;
+				$collatPrimaryColGridClass		= 'grid12-' . $collatPrimaryColUnits;
+				$collatSecondaryColGridClass	= 'grid12-' . $collatSecondaryColUnits;
+				if (empty($secondaryColUnits))
+				{
+					$secondaryColGridClass	= '';
+				}
+			?>
+
+	        <div class="product-img-column <?php echo $imgColGridClass; ?>">
+	            <?php echo $productcache['media'] ?>
+	        </div>
+	        
+	        <div class="product-shop <?php echo $primaryColGridClass; ?>">
+
+	            <div class="product-name">
+	                <h1 itemprop="name"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+	            </div>
+				<div class="product-art-nr grid12-6">
+	                <p>
+	                	<?php echo $this->__('Art. Nr. '); ?><span class="art-nr article"><?php echo $_helper->productAttribute($_product, $_product->getNumber(), 'number') ?></span>-<span class="art-nr colorcode"><?php echo $_helper->productAttribute($_product, $_product->getColorCode(), 'color_code') ?></span> /
+	                	<?php echo $this->__('Style '); ?><span class="iid"><?php echo $_helper->productAttribute($_product, $_product->getIid(), 'iid') ?></span>
+	                </p>
+	                <p class="product-style">
+	                	<?php echo $_helper->productAttribute($_product, $_product->getStyle(), 'style') ?>
+	                </p>
+	            </div>
+				<?php if ( $showBluesign ): ?>
+					<div class="grid12-6 text-right">
+						<img src="<?php echo sprintf(
+							'%s%s', Mage::getBaseUrl( Mage_Core_Model_Store::URL_TYPE_MEDIA ), 'wysiwyg/StatischeBilder/bluesign-wide.png'
+						); ?>">
+					</div>
+					<br style="clear: both;">
+				<?php endif; ?>
+	            
+	            <div class="product-type-data<?php echo $productTypeClasses; ?>"><?php echo $productcache['product_type_data']; ?></div>
+	            
+	            <?php 
+                    //Removed TierPrices until needed
+                    //echo $this->ge tTierPr iceHtml(); //tier prices 
+                ?>
+
+	            <?php if (!$this->hasOptions()): //add to cart when no options ?>
+	                <?php if($_product->isSaleable()): ?>
+	                    <div class="add-to-box">
+	                        <?php echo $this->getChildHtml('addtocart') ?>
+	                    </div>
+	                <?php endif; ?>
+	            <?php endif; ?>
+
+	            <?php if ($_product->isSaleable() && $this->hasOptions()): ?>
+	                <?php if ($productcache['container1'] != ""): ?>
+	                    <div class="container1-wrapper"><?php echo $productcache['container1']; ?></div>
+	                <?php endif; ?>
+	            <?php endif;?>
+
+		        <?php if ($_product->isSaleable() && $this->hasOptions()): ?>
+					<?php if ($productcache['container2'] != ""): ?>
+		        		<div class="box-container2 box-additional <?php echo $container2ColGridClass; ?>">
+							<div class="container2-wrapper"><?php echo $productcache['container2']; ?></div>
+						</div>
+		        	<?php endif; ?>
+		        <?php else: ?>
+		        	<div class="box-container2 box-additional <?php echo $container2ColGridClass; ?>">
+						<div class="container2-wrapper no-stock-info"><?php echo $this->__("Currently this product is not available"); ?></div>
+					</div>
+		        <?php endif; ?>
+
+	            <?php echo $this->getChildHtml('other'); ?>
+
+	            <?php if ($tmpHtml = $this->getChildHtml('block_product_primary_bottom')): ?>
+	            	<div class="feature-wrapper top-border block_product_primary_bottom"><?php echo $tmpHtml; ?></div>
+	            <?php endif; ?>
+	            
+	            <?php if ($tmpHtml = $this->getChildHtml('product_primary_bottom_placeholder')): //Placeholder for extensions ?>
+	            	<div class="feature-wrapper top-border"><?php echo $tmpHtml; ?></div>
+	            <?php endif; ?>
+
+				<div class="box-additional box-tabs grid-full no-gutter <?php //echo $collatPrimaryColGridClass; ?>">
+			    	<?php 
+			    		$info_tabs_html = trim($productcache['info_tabs']);
+						if ($info_tabs_html){
+							echo $info_tabs_html;
+						}
+					?>
+
+					<?php //Open the "Reviews" tab, when "X Review(s)" or "Be the first to review this product" links are clicked ?>
+					<script type="text/javascript">
+					//<![CDATA[
+						jQuery(function($){$("#goto-reviews, #goto-reviews-form").click(function(){if($("#product-tabs").hasClass("accor")){$("#product-tabs .tabs-panels").data("tabs").click($(".tabs-panels .acctab").index($("#acctab-tabreviews")))}else{$("#product-tabs .tabs").data("tabs").click($("#tab-tabreviews").index())}})});
+					//]]>
+					</script>
+			        
+			        <?php echo $productcache['product_additional_data'] ?>
+				</div> <!-- end: box-tabs -->
+
+				<?php if ($addtoLinksHtml = $productcache['addto']): //compare, wishlist, to friend ?>
+					<div class="action-box clearer">
+						<div class="product-links">
+							<?php echo $addtoLinksHtml; ?>
+							<div id="socialshareprivacy"></div>
+						</div>
+					</div>
+				<?php endif; ?>
+
+	        </div> <!-- end: product-shop -->
+	        
+	        <?php if ($secondaryColUnits && 0 == 1): //(!empty($secondaryColUnits)): ?>
+	            <div class="product-secondary-column <?php echo $secondaryColGridClass; ?> custom-sidebar-right">
+	            	<div class="inner">
+
+						<?php //Placeholder for extensions ?>
+						<?php if ($tmpHtml = $this->getChildHtml('product_secondary_top_placeholder')): //Placeholder for extensions ?>
+							<div class="margin-bottom"><?php echo $tmpHtml; ?></div>
+	                    <?php endif; ?>
+	                    
+	                    <?php if (isset($p['secondaryCol'][0])): ?>
+							<?php echo $p['secondaryCol'][0]; ?>
+	                    <?php endif; ?>
+	                    
+	                    <?php if ($tmpHtml = $this->getChildHtml('block_product_secondary_bottom')): ?>
+	                        <div class="feature-wrapper top-border block_product_secondary_bottom"><?php echo $tmpHtml; ?></div>
+	                    <?php endif; ?>
+	                    
+	                    <?php if (isset($p['secondaryCol'][1])): ?>
+							<div class="margin-top"><?php echo $p['secondaryCol'][1]; ?></div>
+	                    <?php endif; ?>
+	                    
+	                    <?php /*?>
+						<?php if (isset($productcache['related'])): ?>
+	                    	<div class="margin-top"><?php echo $productcache['related']; ?></div>
+	                    <?php endif; ?>
+	                    <?php */?>
+
+					</div>
+	            </div> <!-- end: product-secondary-column -->
+	        <?php endif; ?>
+	    </form>
+	    <script type="text/javascript">
+	    //<![CDATA[
+	        var productAddToCartForm = new VarienForm('product_addtocart_form');
+	        //var globchecker = jQuery('.product-view .super-attribute-select.color-selector option:selected').text(); // No Option already selected
+	        var colorchecker = jQuery(location).attr('href').split('-').slice(-3,-2);
+	        var customchecker = colorchecker;
+	        productAddToCartForm.submit = function(button, url) {
+	            if (this.validator.validate()) {
+	                var form = this.form;
+	                var oldUrl = form.action;
+	                if (url) { form.action = url; }
+	                var e = null; 
+	                try { this.form.submit(); } catch (e) { }
+	                this.form.action = oldUrl;
+	                if (e) { throw e; }
+	                if (button && button != 'undefined') {
+	                    button.disabled = true;
+	                }
+	            }
+	        }.bind(productAddToCartForm);
+
+	        productAddToCartForm.submitLight = function(button, url){
+	            if(this.validator) {
+	                var nv = Validation.methods;
+	                delete Validation.methods['required-entry'];
+	                delete Validation.methods['validate-one-required'];
+	                delete Validation.methods['validate-one-required-by-name'];
+	                if (this.validator.validate()) {
+	                    if (url) { this.form.action = url; }
+	                    this.form.submit();
+	                }
+	                Object.extend(Validation.methods, nv);
+	            }
+	        }.bind(productAddToCartForm);
+	    //]]>
+	    </script> 
+		<script type="text/javascript">
+			jQuery(document).ready(function($){
+				if($('#socialshareprivacy').length > 0){
+					$('#socialshareprivacy').socialSharePrivacy({
+						services : {
+						    facebook : {
+						      	'perma_option' : 'off',
+						      	'dummy_img' : "<?php echo $this->getSkinUrl('images/bonus-graphics/dummy_facebook_share_de.png') ?>"
+						    }, 
+						    twitter : {
+						      	'perma_option' : 'off',
+						      	'dummy_img' : "<?php echo $this->getSkinUrl('images/bonus-graphics/dummy_twitter.png') ?>"
+						    },
+						    gplus : {
+						    	'status' : 'off'
+						    }
+						},
+						"css_path"  : "<?php echo $this->getSkinUrl('css/intersales/socialshareprivacy.css') ?>",
+						"language"  : "<?php echo $storeid; ?>"
+					});
+				}
+			});
+		</script>   
+    
+    </div>
+     <div class="box-additional no-gutter box-up-sell <?php echo $collatPrimaryColGridClass; ?>">
+    <?php if (isset($productcache['upsell'])): ?>
+    	<?php echo $productcache['upsell']; ?>
+    <?php endif; ?>
+     </div>
+    <?php $iid = $_product->getIid(); ?>
+    <?php  $itemSize = $_product->getSize(); if($itemSize == ''){$itemSize = 36;}; ?>
+    <div class="box-frame-storefinder no-gutter grid-full<?php if($_product->getStorefinder() == 0){ echo ' hide'; } ?>">
+    	<h2><?php echo $this->__('Artikel Vor Ort Ansehen'); ?></h2>
+    	<div class="storefinder-detail" style="display:none">
+    	</div>
+        <a href="#" id="open-storefinder" title="<?php echo $this->__('Artikel Vor Ort Ansehen') ?>"> </a>
+    </div>
+		<script>
+		  	<?php if($_product->getTypeId() == 'configurable'): ?>
+			  <?php if($valueid && $attrid): ?>
+			  	//updatecoloroption(<?php echo $valueid; ?>,<?php echo $attrid; ?>);
+				setTimeout(function() {
+				  	if(jQuery('.product-options').length){
+				  		jQuery('.product-options .color-option-list li.<?php echo $valueid ?> a')[0].onclick();
+				  	}
+				}, 1);
+			  <?php endif; ?>
+			<?php endif; ?>
+		</script>
+        <script type="text/javascript">
+            jQuery('#open-storefinder').click(function(){
+	            var getparameter = jQuery("#productean").attr("value");
+                var detail = '<div class="desktop">' +
+					'<iframe id="filiale_<?php echo $iid; ?>" scrolling="auto" style="margin-left: 0px;border:none;width: 860px;height:435px; overflow-x:hidden; overflow-y:hidden;" src="http://storelocator.fortuneglobe.com/mey/index_detail.php?ean=' + getparameter + '"> </iframe>' +
+                    '</div>' +
+                    '<div class="mobile">' +
+					'<iframe id="filiale_<?php echo $iid; ?>_mobile" scrolling="auto" style="margin: 0 auto; border: none; width: 100%; height: 500px; overflow: hidden;"  src="http://storelocator.fortuneglobe.com/mey/index_detail.php?ean=' + getparameter + '"> </iframe>' +
+                    '</div>';
+
+                var storefinderContainer = jQuery(".storefinder-detail");
+                if(storefinderContainer.find("#filiale_<?php echo $iid; ?>").length == 0) {
+                    storefinderContainer.html(detail);
+                    jQuery("#open-storefinder").hide();
+                    storefinderContainer.show(300);
+                }
+
+                return false;
+            });
+        </script>
+</div> <!-- end: product-view -->

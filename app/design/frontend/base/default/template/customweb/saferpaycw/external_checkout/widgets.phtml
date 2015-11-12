@@ -1,0 +1,7 @@
+<?php foreach ($this->getWidgets() as $widget) : ?>
+		<div class="<?php echo $widget['checkoutName'] ?>-widget saferpaycw-external-checkout-widget">
+			<?=$widget['html']?>
+		</div>
+	</li>
+	<li>
+<?php endforeach; ?>

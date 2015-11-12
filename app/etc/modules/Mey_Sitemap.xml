@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Sitemap>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Sitemap/>
+            </depends>
+        </Mey_Sitemap>
+    </modules>
+</config>

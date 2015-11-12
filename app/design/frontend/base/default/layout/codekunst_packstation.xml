@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="1.0.0">
+    <onestepcheckout_index_index>
+        <reference name="before_body_end">
+            <block type="core/template" as="packstation" name="packstation" template="codekunst_packstation/packstation.phtml"/>
+        </reference>
+    </onestepcheckout_index_index>
+</layout>

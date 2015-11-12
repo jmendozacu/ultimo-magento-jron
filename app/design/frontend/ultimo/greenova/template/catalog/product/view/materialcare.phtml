@@ -1,0 +1,25 @@
+<?php $product = $this->getProduct() ?>
+<div class="materialcare-panel">
+	<div class="materials">
+		<span class="materials-header"><?php echo $this->__("Material:"); ?></span>
+		<?php echo "<br>"; ?>
+		<?php 
+			$productoptions1 = $product->getmaterial1();
+			$productoptions2 = $product->getmaterial2();
+			echo $productoptions1.', '.$productoptions2;
+		?>
+	</div>
+	<div class="care-instructions">
+		<?php 
+			$productoptions = $product->getCareInstructions();
+			$prodoptarray = explode(",", $productoptions);
+			$productModel = Mage::getModel('catalog/product');
+			$attr = $productModel->getResource()->getAttribute("care_instructions");
+			echo '<ul class="care-list">';
+			foreach ($prodoptarray as $value) {
+				echo '<li><i class="sprite-care-instruct-'.$value.'"></i>'.$attr->getSource()->getOptionText($value).'</li>';
+			}
+			echo '</ul>';
+		?>
+	</div>
+</div>

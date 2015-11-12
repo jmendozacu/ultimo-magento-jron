@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Wishlist>
+            <version>0.1.0</version>
+        </Mey_Wishlist>
+    </modules>
+    <global>
+        <models>
+            <mey_wishlist>
+                <class>Mey_Wishlist_Model</class>
+            </mey_wishlist>
+            <wishlist>
+                <rewrite>
+                    <item>Mey_Wishlist_Model_Item</item>
+                </rewrite>
+            </wishlist>
+        </models>
+    </global>
+</config>

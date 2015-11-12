@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Codekunst_Saferpay>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Customweb_SaferpayCw/>
+            </depends>
+        </Codekunst_Saferpay>
+    </modules>
+</config>

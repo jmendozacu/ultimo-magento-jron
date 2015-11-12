@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <FG_MeyModules>
+            <active>true</active>
+            <codePool>local</codePool>
+        </FG_MeyModules>
+    </modules>
+</config>

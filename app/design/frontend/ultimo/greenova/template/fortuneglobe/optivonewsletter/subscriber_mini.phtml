@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * Media Rocks
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mediarocks
+ * @package     Mediarocks_ExtendedNewsletterSubscription
+ * @copyright   Copyright (c) 2013 Media Rocks GbR. (http://www.mediarocks.de)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * Frontend newsletter subscription template
+ *
+ * @category   design
+ * @package    Mediarocks_ExtendedNewsletterSubscription
+ * @author     Media Rocks Developer
+ */ 
+?>
+
+<div class="block block-subscribe">
+    <form action="<?php echo $this->getFormActionUrl() ?>" method="post" id="newsletter-validate-detail">
+        <div class="block-content">            
+	    	<ul class="form-list" style="list-style:none;">
+	    		<li>
+		            <div class="input-box" style="width:auto;">
+						<select name="gender" id="gender" style="width:100%" class="required-entry validate-text select-text">
+							<option value=""><?php echo $this->__('Salutation') ?></option>
+							<option value="1"><?php echo $this->__('Mr') ?></option>
+							<option value="2"><?php echo $this->__('Ms/Mrs') ?></option>
+						</select>
+		            </div>
+		        </li>
+	    		<li>
+					<div class="input-box">
+						<input type="text" name="lastname" id="lastname" class="input-text required-entry validate-text" placeholder="<?php echo $this->__('Last Name') ?>" />
+		            </div>
+		        </li>
+	    		<li>
+					<div class="input-box">
+						<input type="text" name="email" id="email" class="input-text required-entry validate-email" placeholder="<?php echo $this->__('Email') ?>" />
+		            </div>
+		        </li>
+			</ul>
+			
+            <div class="actions">
+                <button type="submit" title="<?php echo $this->__('Subscribe') ?>" class="button dark"><span class="dark-button-span"><span><?php echo $this->__('Subscribe') ?></span></span></button>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+    //<![CDATA[
+        var newsletterSubscriberFormDetail = new VarienForm('newsletter-validate-detail');
+    //]]>
+    </script>
+</div>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_B2BPayment>
+            <version>0.1.0</version>
+        </Mey_B2BPayment>
+    </modules>
+    <global>
+        <models>
+            <mey_b2bpayment>
+                <class>Mey_B2BPayment_Model</class>
+            </mey_b2bpayment>
+        </models>
+        <helpers>
+            <mey_b2bpayment>
+                <class>Mey_B2BPayment_Helper</class>
+            </mey_b2bpayment>
+        </helpers>
+    </global>
+    <default>
+        <payment>
+            <mey_b2bpayment>
+                <active>0</active>
+                <model>mey_b2bpayment/payment_method_b2b</model>
+                <order_status>pending</order_status>
+                <title>Zahlung nach Vereinbarung</title>
+                <allowspecific>0</allowspecific>
+                <debug>0</debug>
+            </mey_b2bpayment>
+        </payment>
+    </default>
+</config>

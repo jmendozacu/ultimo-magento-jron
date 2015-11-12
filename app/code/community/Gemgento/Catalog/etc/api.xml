@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+    <api>
+        <resources>
+            <catalog_category translate="title" module="catalog">
+                <model>catalog/category_api</model>
+                <title>Category API</title>
+                <methods>
+                    <assignedProducts translate="title" module="catalog">
+                        <title>Retrieve list of assigned products</title>
+                        <acl>catalog/category/product</acl>
+                    </assignedProducts>
+                    <updateProductPositions translate="title" module="catalog">
+                        <title>Update category product positions</title>
+                        <acl>catalog/category</acl>
+                    </updateProductPositions>
+                </methods>
+            </catalog_category>
+        </resources>
+    </api>
+</config>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+    <catalog_category_view_empty>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+    </catalog_category_view_empty>
+    <catalogsearch_result_index_empty>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+            <action method="addBodyClass"><classname>no-search-results</classname></action>
+        </reference>
+    </catalogsearch_result_index_empty>
+    <checkout_cart_index_empty>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+    </checkout_cart_index_empty>
+</layout>

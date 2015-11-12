@@ -1,0 +1,203 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+?>
+
+<?php
+    $_productCollection=$this->getLoadedProductCollection();
+    $_collectionSize = $_productCollection->count();
+?>
+
+<style type="text/css">
+    @import url("<?php echo $this->getSkinUrl('css/looks.css') ?>");
+</style>
+
+<?php if ($_collectionSize && $tmpHtml = $this->getChildHtml('block_category_above_collection')): ?>
+    <div class="block_category_above_collection std"><?php echo $tmpHtml; ?></div>
+<?php endif; ?>
+
+<?php if(!$_collectionSize): ?>
+    <?php if ($tmpHtml = $this->getChildHtml('block_category_above_empty_collection')): ?>
+        <div class="block_category_above_empty_collection std"><?php echo $tmpHtml; ?></div>
+    <?php else: ?>
+        <p class="note-msg empty-catalog"><?php echo $this->__('There are no products matching the selection.') ?></p>
+    <?php endif; ?>
+<?php else: ?>
+<?php if (!$this->getRequest()->isAjax()): ?>
+<div id="ajax-errors" style="display: none;">
+    <ul class="ajax-messages">
+        <li class="error-msg">
+            <ul>
+                <li><span><?php echo $this->__('An error occurred, please try again later.'); ?></span></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div id="loading" style="display: none; margin-bottom: 10px; text-align: center;">
+    <img class="v-middle" alt="" src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif'); ?>"> <?php echo $this->__('Loading, please wait...'); ?>
+</div>
+<div id="catalog-listing">
+<?php endif; ?>
+
+<?php
+    $_helper = $this->helper('catalog/output');
+    $theme = $this->helper('ultimo');
+    $helpLabels = $this->helper('ultimo/labels');
+    $helpTemplate = $this->helper('ultimo/template');
+    $helpImg = $this->helper('infortis/image');
+    $helpImgBase = $this->helper('catalog/image');
+    /* @var $_product Mage_Catalog_Model_Product */
+    
+    //Default image size
+    $imgWidth = 295;
+    $imgHeight = 295;
+    
+    //Aspect ratio settings
+    if ($theme->getCfg('category/aspect_ratio'))
+        $imgHeight = 0; //Height will be computed automatically (based on width) to keep the aspect ratio
+
+    //Hide toolbar
+    $hideToolbar = true;
+?>
+
+<div class="category-products">
+    <?php if (!$hideToolbar): ?>
+        <?php echo $this->getToolbarHtml() ?>
+    <?php endif; ?>
+    <?php if($this->getMode()!='grid'): //List mode ?>
+
+    <?php else: //Grid mode ?>
+
+    <?php
+        //Get grid configuration array
+        $gc = $theme->getCfgGroup('category_grid');
+        
+        //Get number of columns (from parameter or from theme config)
+        $columnCount = 3;
+        if ($this->getGridColumnCount())
+        {
+            $columnCount = $this->getGridColumnCount();
+        }
+        else
+        {
+            $columnCount = $gc['column_count'];
+        }
+
+        //Grid classes
+        $gridClasses = '';
+        if ($gc['display_name'] == 2 && $gc['display_name_single_line'] == true)
+            $gridClasses .= ' single-line-name';
+        if ($gc['centered'])
+            $gridClasses .= ' centered';
+        if ($gc['equal_height'])
+            $gridClasses .= ' equal-height';
+
+        //Size of grid elements
+        if ($gc['elements_size'])
+        {
+            $gridClasses .= ' size-' . $gc['elements_size'];
+        }
+        else
+        {
+            //Calculate size based on number of columns
+            if ($columnCount >= 6)
+            {
+                $gridClasses .= ' size-xs';
+            }
+            elseif ($columnCount >= 4)
+            {
+                $gridClasses .= ' size-s';
+            }
+        }
+
+        //Container "actions" at the bottom of the grid item stores button and add-to links
+        //If at least one of those elements was set as "Display on hover" but no element was set as "Display":
+        //apply appropriate classes to the container.
+        $actionsClasses = '';
+        if ($gc['display_addtocart'] == 1 || ($gc['display_addtolinks'] == 1 && !$gc['addtolinks_simple']))
+        {
+            $actionsClasses = ' display-onhover';
+        }
+        if ($gc['display_addtocart'] == 2 || ($gc['display_addtolinks'] == 2 && !$gc['addtolinks_simple']))
+        {
+            $actionsClasses = '';
+        }
+    ?>
+
+    <div id="slider">
+        <ul>
+            <?php foreach ($_productCollection as $_product): ?>
+                <?php $_product->load('media_gallery'); ?>
+                <li class="look-item">
+                    <div class="hover-container" style="background-image: url('<?php echo $helpImgBase->init($_product, 'image'); ?>');">
+                        <div class="pullup">
+                            <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+                            <?php if($_product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE): ?>
+                            <hr/>
+                            <table>
+                                <?php
+                                $configurableProductCollection = Mage::helper('codekunst_looks')->getConfigurableProductCollectionForBundle($_product);
+                                ?>
+                                <?php foreach($configurableProductCollection as $configurableProduct): ?>
+                                    <tr>
+                                        <td class="configurable-name"><?php echo $_helper->productAttribute($configurableProduct, $configurableProduct->getName(), 'name') ?></td>
+                                        <td><?php echo $this->getPriceHtml($configurableProduct, true) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </table>
+                            <?php endif; ?>
+                            <a href="<?php echo $_product->getProductUrl() ?>">
+                                <div class="look-button">
+                                    <?php echo $this->__('Shop Look') ?>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+
+            <?php endforeach; ?>
+        </ul>
+        <a class="control_prev"></a>
+        <a class="control_next"></a>
+    </div>
+    <?php endif; //end: if grid mode ?>
+</div>
+<?php if (!$this->getRequest()->isAjax()): ?>
+</div>
+<?php endif; ?>
+<?php endif; ?>
+
+<?php if ($_collectionSize && $tmpHtml = $this->getChildHtml('block_category_below_collection')): ?>
+    <div class="block_category_below_collection std"><?php echo $tmpHtml; ?></div>
+<?php endif; ?>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/codekunst_looks/product_list.js') ?>"></script>

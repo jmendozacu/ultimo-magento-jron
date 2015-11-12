@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Amazon>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Creativestyle_CheckoutByAmazon/>
+
+            </depends>
+        </Mey_Amazon>
+    </modules>
+</config>

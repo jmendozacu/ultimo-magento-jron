@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<Intersales_SocialSharePrivacy>
+			 <version>1.0.0.0</version>
+		</Intersales_SocialSharePrivacy>
+	</modules>
+
+	<adminhtml>
+		<translate>
+			<modules>
+				<Intersales_SocialSharePrivacy>
+					<files>
+						<default>Intersales_SocialSharePrivacy.csv</default>
+					</files>
+				</Intersales_SocialSharePrivacy>
+			</modules>
+		</translate>
+	</adminhtml>
+
+	<frontend>
+		<translate>
+			<modules>
+				<Intersales_SocialSharePrivacy>
+					<files>
+						<default>Intersales_SocialSharePrivacy.csv</default>
+					</files>
+				</Intersales_SocialSharePrivacy>
+			</modules>
+		</translate>
+		<layout>
+			<updates>
+				<socialshareprivacy>
+					<file>intersales/socialshareprivacy.xml</file>
+				</socialshareprivacy>
+			</updates>
+		</layout>
+	</frontend>
+
+	<global>
+		<blocks>
+			<socialshareprivacy>
+				<class>Intersales_SocialSharePrivacy_Block</class>
+			</socialshareprivacy>
+		</blocks>
+
+		<helpers>
+			<socialshareprivacy>
+				<class>Intersales_SocialSharePrivacy_Helper</class>
+			</socialshareprivacy>
+		</helpers>
+	</global>
+</config>

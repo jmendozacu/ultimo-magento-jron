@@ -1,0 +1,55 @@
+<config>
+    <tabs>
+        <fg_config translate="label" module="fg_connector">
+            <label>Fortuneglobe</label>
+            <sort_order>1</sort_order>
+        </fg_config>
+    </tabs>
+    <sections>
+        <fg_options translate="label" module="fg_connector">
+            <label>Fortuneglobe Options</label>
+            <tab>fg_config</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>1000</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <messages translate="label">
+                    <label>Connector</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                      <fg_soapurl>
+                        <label>SOAP Url</label>
+                        <frontend_type>text</frontend_type>
+                        <sort_order>1</sort_order>
+                        <show_in_default>1</show_in_default>
+                        <show_in_website>1</show_in_website>
+                        <show_in_store>1</show_in_store>                    
+                      </fg_soapurl>
+                      <fg_esburl>
+                        <label>Service Url</label>
+                        <frontend_type>text</frontend_type>
+                        <sort_order>2</sort_order>
+                        <show_in_default>1</show_in_default>
+                        <show_in_website>1</show_in_website>
+                        <show_in_store>1</show_in_store>                    
+                      </fg_esburl>
+                      <fg_imageurl>
+                        <label>Image Directory Url</label>
+                        <frontend_type>text</frontend_type>
+                        <sort_order>3</sort_order>
+                        <show_in_default>1</show_in_default>
+                        <show_in_website>1</show_in_website>
+                        <show_in_store>1</show_in_store>                    
+                      </fg_imageurl>              
+                    </fields>
+                </messages>
+            </groups>                  
+        </fg_options>
+    </sections>    
+</config>

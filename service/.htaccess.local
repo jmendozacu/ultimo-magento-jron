@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "RESTRICTED AREA"
+AuthUserfile "../www/ultimo/service/.htpasswd"
+Require valid-user

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<catalog_product_view>
+		<reference name="head">
+			<action method="addJs"><script>intersales/socialshareprivacy/jquery.socialshareprivacy.min.js</script></action>
+
+			<action method="addCss"><stylesheet>css/intersales/socialshareprivacy.css</stylesheet></action>
+		</reference>
+
+		<reference name="product.info.extrahint">
+			<block type="socialshareprivacy/view" name="product.info.extrahint.socialshareprivacy" template="intersales/socialshareprivacy/view.phtml" />
+		</reference>
+	</catalog_product_view>
+</layout>

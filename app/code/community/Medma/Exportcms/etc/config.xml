@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Medma_Exportcms>
+			<version>1.0.1</version>
+		</Medma_Exportcms>
+	</modules>
+
+	<admin>
+		<routers>
+			<adminhtml>
+				<args>
+					<modules>
+                        <Medma_Exportcms before="Mage_Adminhtml">Medma_Exportcms_Adminhtml</Medma_Exportcms>
+                    </modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
+
+	<adminhtml>
+		<layout>  
+            <updates>
+                <exportcms>
+                    <file>exportcms.xml</file> 
+                </exportcms>
+            </updates>
+        </layout>
+	</adminhtml>
+
+	<global>
+		<events>
+			<medma_domain_authentication>
+				<observers>
+					<domain>
+						<class>Medma_Exportcms_Model_Authenticate</class>
+						<method>saveDomain</method>
+					</domain>
+				</observers>
+			</medma_domain_authentication>
+		</events>
+		<blocks>
+			<exportcms>
+				<class>Medma_Exportcms_Block</class>
+			</exportcms>
+			<adminhtml>
+				<rewrite>
+					<cms_page_grid>Medma_Exportcms_Block_Adminhtml_Cms_Page_Grid</cms_page_grid>
+					<cms_block_grid>Medma_Exportcms_Block_Adminhtml_Cms_Block_Grid</cms_block_grid>
+				</rewrite>
+			</adminhtml>
+		</blocks>
+		<helpers>
+			<exportcms>
+				<class>Medma_Exportcms_Helper</class>
+			</exportcms>
+		</helpers>
+		<models>
+			<exportcms>
+				<class>Medma_Exportcms_Model</class>
+			</exportcms>
+		</models>
+		<resources>
+			<exportcms_setup>
+				<setup>
+					<module>Medma_Exportcms</module>
+					<class>Medma_Exportcms_Model_Resource_Setup</class>
+				</setup>
+			</exportcms_setup>
+		</resources>
+	</global>
+</config>

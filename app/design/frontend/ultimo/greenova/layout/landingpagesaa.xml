@@ -1,0 +1,83 @@
+<layout version="0.1.0">
+
+    <landingpagesaa_index_index>
+        <!-- Set title -->
+        <reference name="head">
+            <action method="setTitle">
+                <title>landingpagesaa</title>
+            </action>
+        </reference>
+
+        <!-- Switch root template to 2 columns left -->
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/2columns-left.phtml</template>
+            </action>
+        </reference>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/price_slider/style.css</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/catalin_seo/native.history.js</name>
+            </action>
+        </reference>
+
+        <reference name="content">
+
+            <!--
+            <block type="landingpagesaa/view" name="landingpagesaa" template="landingpagesaa/view.phtml" >
+            </block>
+            -->
+            <!-- Add product list to content -->
+            <block type="catalog/product_list" name="product_list" template="catalin_seo/catalog/product/list.phtml">
+                <!-- Add toolbar to product list -->
+                <block type="catalin_seo/catalog_product_list_toolbar" name="product_list_toolbar"
+                       template="catalog/product/list/toolbar.phtml">
+                    <!-- Add pager to toolbar -->
+                    <block type="catalin_seo/catalog_product_list_pager" name="product_list_toolbar_pager"/>
+                </block>
+
+                <!-- Specify toolbar block name -->
+                <action method="setToolbarBlockName">
+                    <name>product_list_toolbar</name>
+                </action>
+
+                <!-- Use custom product collection -->
+                <action method="setCollection">
+                    <value helper="landingpagesaa/getProductCollection"/>
+                </action>
+
+                <!-- Use custom available sort by orders -->
+                <action method="setAvailableOrders">
+                    <value helper="landingpagesaa/getAvailableOrders"/>
+                </action>
+
+                <!-- Set the default sort by order -->
+                <action method="setSortBy">
+                    <value>position</value>
+                </action>
+
+                <!-- Set default direction to ascending -->
+                <action method="setDefaultDirection">
+                    <value>asc</value>
+                </action>
+                <!--
+                    <action method="setColumnCount">
+                        <coulumn>5</coulumn>
+                    </action>
+                -->
+            </block>
+        </reference>
+        <update handle="product_list"/>
+
+        <reference name="left">
+            <remove name="catalogsearch.leftnav"/>
+            <block type="catalog/layer_view" name="catalog.leftnav" after="currency"
+                   template="catalin_seo/catalog/layer/view.phtml"/>
+        </reference>
+    </landingpagesaa_index_index>
+
+</layout>

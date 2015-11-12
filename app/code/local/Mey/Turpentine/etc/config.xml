@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Turpentine>
+            <version>0.1.0</version>
+        </Mey_Turpentine>
+    </modules>
+    <global>
+        <models>
+            <mey_turpentine>
+                <class>Mey_Turpentine_Model</class>
+            </mey_turpentine>
+            <turpentine>
+                <rewrite>
+                    <dummy_request>Mey_Turpentine_Model_Turpentine_Dummy_Request</dummy_request>
+                </rewrite>
+            </turpentine>
+            <core>
+                <rewrite>
+                    <url_rewrite_request>Mey_Turpentine_Model_Core_Url_Rewrite_Request</url_rewrite_request>
+                </rewrite>
+            </core>
+        </models>
+    </global>
+</config>

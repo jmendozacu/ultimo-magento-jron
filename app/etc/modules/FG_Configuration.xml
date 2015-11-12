@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <FG_Configuration>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Codekunst_Packstation/>
+                <Codekunst_Payglobe/>
+                <Creativestyle_CheckoutByAmazon/>
+                <Customweb_SaferpayCw/>
+                <Iksanika_OneStepCheckout/>
+                <Paymentnetwork_Pnsofortueberweisung/>
+                <Phoenix_CashOnDelivery/>
+                <Phoenix_BankPayment/>
+            </depends>
+        </FG_Configuration>
+    </modules>
+</config>

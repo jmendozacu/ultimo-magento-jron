@@ -1,0 +1,107 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div class="page-title">
+<h1><?php echo $this->__('Contact') ?></h1>
+</div>
+<div class="contacct-form">
+    <form action="<?php echo $this->getFormAction(); ?>" id="contactForm" method="post">
+        <div class="fieldset">
+            <ul class="form-list">
+                <li>
+                    <div class="field wide">
+                        <div class="input-box">
+                            <select name="salutation" class="required-entry">
+                                <option value=""><?php echo Mage::helper('contacts')->__('choose') ?></option>
+                                <option><?php echo Mage::helper('contacts')->__('Male') ?></option>
+                                <option><?php echo Mage::helper('contacts')->__('Female') ?></option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="field wide">
+                        <div class="input-box">
+                            <input name="firstname" id="firstname" title="<?php echo $this->__('First Name') ?>" value="" class="input-text required-entry" type="text" placeholder="<?php echo $this->__('First Name') ?>*" />
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="field wide">
+                        <div class="input-box">
+                            <input name="lastname" id="lastname" title="<?php echo $this->__('Last Name') ?>" value="" class="input-text required-entry" type="text" placeholder="<?php echo $this->__('Last Name') ?>*" />
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="field wide">
+                        <div class="input-box">
+                            <input name="email" id="email" title="<?php echo $this->__('Email Address') ?>" value="" class="input-text required-entry validate-email" type="text" placeholder="<?php echo $this->__('Email Address') ?>*" />
+                        </div>
+                    </div>
+                </li>
+                <li >
+                    <div class="field wide">
+                        <div class="input-box">
+                            <input name="customerid" id="customerid" title="<?php echo $this->__('Customer Id') ?>" value="" class="input-text" type="text" placeholder="<?php echo $this->__('Customer Id') ?>" />
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="field wide">
+                        <div class="input-box">
+                            <input name="orderid" id="orderid" title="<?php echo $this->__('Order Id') ?>" value="" class="input-text" type="text" placeholder="<?php echo $this->__('Order Id') ?>" />
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="field wide">
+                        <div class="input-box">
+                            <textarea name="comment" id="comment" title="<?php echo $this->__('Comment') ?>" class="input-text" cols="5" rows="3" placeholder="<?php echo $this->__('Comments') ?>" ></textarea>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+        <div class="buttons-set">
+            <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />
+            <button type="submit" title="<?php echo Mage::helper('contacts')->__('Submit') ?>" class="button"><span><span><?php echo Mage::helper('contacts')->__('Submit') ?></span></span></button>
+        </div>
+    </form>
+</div>
+<div class="contact-info">
+    <?php if ($tmpHtml = $this->getLayout()->createBlock('cms/block')->setBlockId('contacts_block_info')->toHtml()): ?>
+        <div class="contact-info-content">
+            <?php echo $tmpHtml; ?>
+        </div>
+    <?php endif; ?>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var contactForm = new VarienForm('contactForm', true);
+//]]>
+</script>

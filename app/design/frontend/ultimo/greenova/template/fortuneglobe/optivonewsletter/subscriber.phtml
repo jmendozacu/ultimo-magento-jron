@@ -1,0 +1,134 @@
+<?php
+
+/**
+ * Media Rocks
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mediarocks
+ * @package     Mediarocks_ExtendedNewsletterSubscription
+ * @copyright   Copyright (c) 2013 Media Rocks GbR. (http://www.mediarocks.de)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * Frontend newsletter subscription template
+ *
+ * @category   design
+ * @package    Mediarocks_ExtendedNewsletterSubscription
+ * @author     Media Rocks Developer
+ */ 
+?>
+
+<div class="block block-subscribe">
+    <form action="<?php echo $this->getFormActionUrl() ?>" method="post" id="newsletter-validate-detail">
+        <div class="block-content">            
+	    	<ul class="form-list" style="list-style:none;">
+	    		<li class="fields">
+	    			<div class="field">
+			            <div class="input-box" style="width:auto;">
+							<select name="gender" id="gender" style="width:100%" class="validate-text select-text">
+								<option value=""><?php echo $this->__('Salutation') ?></option>
+								<option value="1"><?php echo $this->__('Mr') ?></option>
+								<option value="2"><?php echo $this->__('Ms/Mrs') ?></option>
+							</select>
+			            </div>
+		            </div>
+	    			<div class="field">
+						<div class="input-box">
+							<input type="text" name="title" id="title" class="input-text validate-text" placeholder="<?php echo $this->__('Title') ?>" />
+			            </div>
+		            </div>
+		        </li>
+	    		<li class="fields">
+	    			<div class="field">
+						<div class="input-box">
+							<input type="text" name="firstname" id="firstname" class="input-text validate-text" placeholder="<?php echo $this->__('First Name') ?>" />
+			            </div>
+		            </div>
+	    			<div class="field">
+						<div class="input-box">
+							<input type="text" name="lastname" id="lastname" class="input-text validate-text" placeholder="<?php echo $this->__('Last Name') ?>" />
+			            </div>
+		            </div>
+		        </li>
+	    		<li class="fields">
+	    			<div class="field">
+						<div class="input-box">
+							<input type="text" name="email" id="email" class="input-text required-entry validate-email" placeholder="<?php echo $this->__('Email') ?>" />
+			            </div>
+		            </div>
+	    			<div class="field">
+						<div class="input-box">
+							<input type="text" name="telephone" id="telephone" class="input-text validate-text" placeholder="<?php echo $this->__('Telephone') ?>" />
+			            </div>
+		            </div>
+		        </li>
+	    		<li>
+	    			<div class="field wide">
+						<div class="input-box">
+							<input type="text" name="street" id="street" class="input-text validate-text" placeholder="<?php echo $this->__('Adresse') ?>" />
+			            </div>
+		            </div>
+		        </li>
+	    		<li>
+	    			<div class="field wide">
+						<div class="input-box">
+							<?php $_countries = Mage::getResourceModel('directory/country_collection')
+							                                    ->loadData()
+							                                    ->toOptionArray(false) ?>
+							<?php if (count($_countries) > 0): ?>
+							    <select name="country" id="country" class="select-text validate-text">
+							        <option value=""><?php echo $this->__('Country') ?></option>
+							        <?php foreach($_countries as $_country): ?>
+							            <option value="<?php echo $_country['value'] ?>">
+							                <?php echo $_country['label'] ?>
+							            </option>
+							        <?php endforeach; ?>
+							    </select>
+							<?php endif; ?>
+			            </div>
+		            </div>
+		        </li>
+	    		<li class="fields">
+	    			<div class="field">
+						<div class="input-box">
+							<input type="text" name="zipcode" id="zipcode" class="input-text validate-text" placeholder="<?php echo $this->__('Zip/Postal Code') ?>" />
+			            </div>
+		            </div>
+	    			<div class="field">
+						<div class="input-box">
+							<input type="text" name="city" id="city" class="input-text validate-text" placeholder="<?php echo $this->__('City') ?>" />
+			            </div>
+		            </div>
+		        </li>
+	    		<li>
+	    			<div class="field wide">
+						<div class="input-box">
+							<?php echo $this->getLayout()->createBlock('customer/widget_dob')->toHtml() ?>
+			            </div>
+		            </div>
+		        </li>
+			</ul>
+			
+            <div class="actions">
+                <button type="submit" title="<?php echo $this->__('Subscribe') ?>" class="button dark"><span class="dark-button-span"><span><?php echo $this->__('Subscribe') ?></span></span></button>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+    //<![CDATA[
+        var newsletterSubscriberFormDetail = new VarienForm('newsletter-validate-detail');
+    //]]>
+    </script>
+</div>

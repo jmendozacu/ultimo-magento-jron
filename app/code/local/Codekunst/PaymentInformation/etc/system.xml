@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<config>
+    <sections>
+        <payment>
+            <groups>
+                <sofort_ideal>
+                    <fields>
+                        <information_text translate="label">
+                            <label>Information Text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>131</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </information_text>
+                    </fields>
+                </sofort_ideal>
+                <paypal_payments>
+                    <wps>
+                        <fields>
+                            <settings_payments_standart>
+                                <fields>
+                                    <information_text translate="label">
+                                        <label>Information Text</label>
+                                        <frontend_type>text</frontend_type>
+                                        <config_path>payment/paypal_standard/information_text</config_path>
+                                        <sort_order>25</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </information_text>
+                                </fields>
+                            </settings_payments_standart>
+                            <settings_ec>
+                                <fields>
+                                    <information_text translate="label">
+                                        <label>Information Text</label>
+                                        <frontend_type>text</frontend_type>
+                                        <config_path>payment/paypal_express/information_text</config_path>
+                                        <sort_order>25</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </information_text>
+                                </fields>
+                            </settings_ec>
+                        </fields>
+                    </wps>
+                </paypal_payments>
+            </groups>
+        </payment>
+    </sections>
+</config>

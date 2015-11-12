@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Codekunst_PaymentInformation>
+            <version>0.1.0</version>
+        </Codekunst_PaymentInformation>
+    </modules>
+    <default>
+        <payment>
+            <sofort_ideal>
+                <information_text></information_text>
+            </sofort_ideal>
+            <paypal_standard>
+                <information_text></information_text>
+            </paypal_standard>
+            <paypal_express>
+                <information_text></information_text>
+            </paypal_express>
+        </payment>
+    </default>
+</config>

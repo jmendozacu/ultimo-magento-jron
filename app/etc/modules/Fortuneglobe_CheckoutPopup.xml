@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Fortuneglobe_CheckoutPopup>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Fortuneglobe_CheckoutPopup>
+    </modules>
+</config>

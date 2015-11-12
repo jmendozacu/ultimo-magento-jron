@@ -1,0 +1,18 @@
+<script type="text/javascript">
+    //<![CDATA[
+    Translator.add('Your chosen payment method does not allow deliveries to Packstation!', '<?php echo $this->helper('codekunst_packstation')->__('Your chosen payment method does not allow deliveries to Packstation!') ?>');
+
+    var packstationDisallowedPaymentMethods = <?php echo json_encode(explode(',', Mage::getStoreConfig('shipping/packstation/disallowed_payment_methods'))) ?>;
+    Validation.add('validate-packstation-payment', Translator.translate('Your chosen payment method does not allow deliveries to Packstation!'), function(street){
+        if(street.toLowerCase().match('packstation') !== null) {
+            for(var i = 0; i < packstationDisallowedPaymentMethods.length; i++) {
+                var method = $('p_method_' + packstationDisallowedPaymentMethods[i]);
+                if(method !== null && method.checked) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    });
+    //]]>
+</script>

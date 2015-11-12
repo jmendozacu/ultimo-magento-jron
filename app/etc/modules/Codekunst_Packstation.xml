@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Codekunst_Packstation>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Codekunst_Packstation>
+    </modules>
+</config>

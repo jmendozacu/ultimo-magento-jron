@@ -1,0 +1,47 @@
+{
+    "data": {
+        "action": "products",
+        "type": "create",
+        "data": [
+            {
+                "sku": "SOAP-Stammartikel-1-Variante-blau-70-A",
+                "type": "simple",
+                "categories": [],
+                "ean": "1111111111111",
+                "name": "BH blau 70A",
+                "color": "blau",
+                "number": "1111-1",
+                "iid": 1001,
+                "description": "BH blau 70A Beschreibung",
+                "primary_size": {
+                    "admin": "70",
+                    "de": "70",
+                    "en": "70",
+                    "nl": "70"
+                },
+                "filter_color": "blau",
+                "short_description": "BH blau 70A Kurzbeschreibung",
+                "secondary_size": "A",
+                "news_from_date": null,
+                "news_to_date": null,
+                "status": "1",
+                "delivery_time": "sofort",
+                "created_at": "2014-03-26T11:13:55+01:00",
+                "updated_at": "2014-03-26 10:13:55",
+                "price": "19.9000",
+                "special_price": null,
+                "special_from_date": null,
+                "special_to_date": null,
+                "care_instructions": "Nicht bügeln"
+            },
+            {
+                "sku": "SOAP-Stammartikel-1",
+                "type": "configurable",
+                "categories": [],
+                "status": "1",
+                "created_at": "2014-03-26T11:13:55+01:00",
+                "updated_at": "2014-03-26 10:13:55"
+            }
+        ]
+    }
+}

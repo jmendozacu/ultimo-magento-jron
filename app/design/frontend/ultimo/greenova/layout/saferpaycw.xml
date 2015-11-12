@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<layout>
+	<checkout_onepage_index>
+			<reference name="head">
+				 <action method="addItem"><type>skin_css</type><name>customweb/saferpaycw/updates.css</name></action>
+			</reference>
+			<reference name="content">
+        		<block type="saferpaycw/Checkout" name="loadJavascriptForSaferpayCw" after="-" />
+   			</reference>
+	</checkout_onepage_index>
+	
+	<onestepcheckout_index_index>
+			<reference name="head">
+				<action method="addItem"><type>skin_css</type><name>customweb/saferpaycw/updates.css</name></action>
+			</reference>
+			<reference name="content">
+        		<block type="saferpaycw/Checkout" name="loadJavascriptForSaferpayCw" after="-" />
+   			</reference>
+	</onestepcheckout_index_index>
+	
+	<gomage_checkout_onepage_index>
+			<reference name="head">
+				<action method="addItem"><type>skin_css</type><name>customweb/saferpaycw/updates.css</name></action>
+			</reference>
+			<reference name="before_body_end">
+        		<block type="saferpaycw/Checkout" name="loadJavascriptForSaferpayCw" after="-" />
+   			</reference>
+	</gomage_checkout_onepage_index>
+
+	<aw_onestepcheckout_index_index>
+			<reference name="head">
+				<action method="addItem"><type>skin_css</type><name>customweb/saferpaycw/updates.css</name></action>
+			</reference>
+			<reference name="content">
+        		<block type="saferpaycw/Checkout" name="loadJavascriptForSaferpayCw" after="-" />
+   			</reference>
+	</aw_onestepcheckout_index_index>
+	
+	<firecheckout_index_index translate="label">
+			<reference name="head">
+				<action method="addItem"><type>skin_css</type><name>customweb/saferpaycw/updates.css</name></action>
+			</reference>
+			<reference name="content">
+        		<block type="saferpaycw/Checkout" name="loadJavascriptForSaferpayCw" after="-" />
+   			</reference>
+	</firecheckout_index_index>
+	
+	<saferpaycw_checkout_pay>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>customweb/saferpaycw/updates.css</name></action>
+		</reference>
+	</saferpaycw_checkout_pay>
+
+</layout>

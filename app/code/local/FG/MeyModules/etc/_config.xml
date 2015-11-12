@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <FG_MeyModules>
+            <version>0.1.1</version>
+        </FG_MeyModules>
+    </modules>
+    <global>
+        <models>
+            <meymodules>
+                <class>FG_MeyModules_Model</class>
+            </meymodules>
+        </models>
+        <events>
+            <createNavigationTree>
+                <observers>
+                    <meymodules_model_observer>
+                        <class>FG_MeyModules_Model_Observer</class>
+                        <method>addToTopmenu</method>
+                    </meymodules_model_observer>
+                </observers>
+            </createNavigationTree>             
+            <sortSavedProduct>
+                <observers>
+                    <meymodules_model_observer>
+                        <class>FG_MeyModules_Model_Observer</class>
+                        <method>checkforSpecialTreatment</method>
+                    </meymodules_model_observer>
+                </observers>
+            </sortSavedProduct>
+            <catalog_saved_event>
+                <observers>
+                    <meymodules_model_observer>
+                        <class>FG_MeyModules_Model_Observer</class>
+                        <method>checkCatgoriesAfterAlter</method>
+                    </meymodules_model_observer>
+                </observers>
+            </catalog_saved_event>
+        </events>
+    </global>
+</config>

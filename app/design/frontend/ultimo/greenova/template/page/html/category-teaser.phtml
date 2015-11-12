@@ -1,0 +1,13 @@
+<div class="collapsible mobile-collapsible category-teaser">
+	<h5 class="block-title heading hide-above-768"><?php echo $this->__('Kategorie Teaser') ?></h5>
+	<div class="block-content">
+		<?php
+			if(Mage::getBlockSingleton("page/html_header")->getIsHomePage()) {
+				$catdesc = Mage::getModel('catalog/category')->load(Mage::app()->getStore()->getRootCategoryId())->getSeoText();
+			}else {
+				$catdesc = "";
+			}
+			echo $catdesc;
+		?>
+	</div>
+</div>

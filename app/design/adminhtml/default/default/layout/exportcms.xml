@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<layout>
+	<adminhtml_cms_page_massexportpages>
+		<update handle="adminhtml_system_convert_profile_run" />
+		<reference name="system_convert_profile_run">
+			<action method="setTemplate"><template>exportcms/system/convert/profile/process.phtml</template></action>
+		</reference>
+	</adminhtml_cms_page_massexportpages>
+
+	<adminhtml_cms_block_massexportblocks>
+		<update handle="adminhtml_cms_page_massexportpages"/>
+	</adminhtml_cms_block_massexportblocks>
+</layout>

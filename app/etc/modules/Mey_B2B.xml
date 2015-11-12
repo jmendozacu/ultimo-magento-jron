@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_B2B>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <OrganicInternet_SimpleConfigurableProducts/>
+                <Iksanika_OneStepCheckout/>
+                <Webtex_CustomerPrices/>
+            </depends>
+        </Mey_B2B>
+    </modules>
+</config>

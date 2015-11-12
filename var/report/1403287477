@@ -1,0 +1,8 @@
+a:5:{i:0;s:20:"Invalid URI supplied";i:1;s:760:"#0 G:\wamp\www\ultimo\lib\Zend\Uri.php(143): Zend_Uri_Http->__construct('http', '127.0.0.1:8080/...')
+#1 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\Store.php(773): Zend_Uri::factory('http:127.0.0.1:...')
+#2 G:\wamp\www\ultimo\app\code\core\Mage\Core\Controller\Varien\Front.php(332): Mage_Core_Model_Store->isCurrentlySecure()
+#3 G:\wamp\www\ultimo\app\code\core\Mage\Core\Controller\Varien\Front.php(161): Mage_Core_Controller_Varien_Front->_checkBaseUrl(Object(Mage_Core_Controller_Request_Http))
+#4 G:\wamp\www\ultimo\app\code\local\Mage\Core\Model\App.php(354): Mage_Core_Controller_Varien_Front->dispatch()
+#5 G:\wamp\www\ultimo\app\Mage.php(684): Mage_Core_Model_App->run(Array)
+#6 G:\wamp\www\ultimo\index.php(87): Mage::run('', 'store')
+#7 {main}";s:3:"url";s:24:"/ultimo/index.php/admin/";s:11:"script_name";s:17:"/ultimo/index.php";s:4:"skin";s:5:"admin";}

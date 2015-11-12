@@ -1,0 +1,69 @@
+<?php
+/**
+ * Use this template to display the sidebar menu inside static blocks and pages.
+ */
+?>
+<?php
+    $helper = Mage::helper('ultramegamenu');
+    $visibilityClass = $helper->getCfg('sidemenu/hide_on_mobile') ? ' hide-below-768' : '';
+
+    //Get starting category - a point where traverse begins
+    $categoryId = $this->getParent();
+    if ($categoryId === NULL) //Param not set
+    {
+        $categoryId = $helper->getCfg('sidemenu/parent');
+    }
+
+    //Get depth of recursion - how many levels of subcategories retrieve
+    $depth = $this->getDepth();
+    if ($depth === NULL) //Param not set
+    {
+        $depth = intval($helper->getCfg('sidemenu/depth'));
+    }
+    else
+    {
+        $depth = intval($depth);
+    }
+
+    // FG Modify BEGIN
+    $rootcatid = Mage::app()->getStore()->getRootCategoryId();
+    $category = Mage::registry('current_category');
+
+    while ( $category->getParentId() != $rootcatid) {
+        $parentid = $category->getParentId();
+        $category = Mage::getModel('catalog/category')->load($parentid);
+        $categoryId = $parentid;
+    }
+    // FG Modify END
+
+    //Render categories menu HTML
+    $html = $this->renderMe(TRUE, $categoryId, $depth);
+    if (!$html)
+    {
+        return '';
+    }
+?>
+<?php if(Mage::registry('current_category')->getImageUrl() != ""): ?>
+    <div class="category-image posrel">
+        <img src="<?php echo Mage::registry('current_category')->getImageUrl(); ?>" alt="<?php echo Mage::registry('current_category')->getName(); ?>" title="<?php echo Mage::registry('current_category')->getName(); ?>">
+        <?php if ( Mage::registry( 'current_category' )->getDescription() && Mage::helper("mobiledetect")->isMobile()): ?>
+            <div class="posabs foo">
+                <div class="bummi posrel text-left">
+                    <?php echo Mage::registry( 'current_category' )->getDescription(); ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+<div class="left-navigation block block-vertnav<?php echo $visibilityClass; ?>">
+
+    <div class="block-title">
+        <strong><span><?php echo $category->getName(); ?></span></strong>
+    </div>
+
+    <div class="block-content">
+        <ul class="accordion accordion-style1 vertnav vertnav-side clearer">
+            <?php echo $html; ?>
+        </ul>
+    </div>
+</div>

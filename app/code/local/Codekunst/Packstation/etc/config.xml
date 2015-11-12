@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Codekunst_Packstation>
+            <version>0.1.0</version>
+        </Codekunst_Packstation>
+    </modules>
+
+    <global>
+        <models>
+            <codekunst_packstation>
+                <class>Codekunst_Packstation_Model</class>
+            </codekunst_packstation>
+        </models>
+
+        <helpers>
+            <codekunst_packstation>
+                <class>Codekunst_Packstation_Helper</class>
+            </codekunst_packstation>
+        </helpers>
+
+        <events>
+            <sales_order_place_before>
+                <observers>
+                    <codekunst_packstation>
+                        <type>singleton</type>
+                        <class>Codekunst_Packstation_Model_Observer</class>
+                        <method>checkPaymentOption</method>
+                    </codekunst_packstation>
+                </observers>
+            </sales_order_place_before>
+        </events>
+    </global>
+
+    <frontend>
+        <translate>
+            <modules>
+                <Codekunst_Packstation>
+                    <files>
+                        <default>Codekunst_Packstation.csv</default>
+                    </files>
+                </Codekunst_Packstation>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <codekunst_packstation module="Codekunst_Packstation">
+                    <file>codekunst_packstation.xml</file>
+                </codekunst_packstation>
+            </updates>
+        </layout>
+    </frontend>
+
+    <default>
+        <shipping>
+            <packstation>
+                <disallowed_payment_methods/>
+            </packstation>
+        </shipping>
+    </default>
+</config>

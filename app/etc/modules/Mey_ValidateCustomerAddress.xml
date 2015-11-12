@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_ValidateCustomerAddress>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Iksanika_OneStepCheckout/>
+            </depends>
+        </Mey_ValidateCustomerAddress>
+    </modules>
+</config>

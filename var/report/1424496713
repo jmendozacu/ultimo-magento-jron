@@ -1,0 +1,8 @@
+a:4:{i:0;s:67:"Module "FG_Configuration" requires module "Phoenix_CashOnDelivery".";i:1;s:695:"#0 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\Config.php(849): Mage::throwException('Module "FG_Conf...')
+#1 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\Config.php(812): Mage_Core_Model_Config->_sortModuleDepends(Array)
+#2 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\Config.php(315): Mage_Core_Model_Config->_loadDeclaredModules()
+#3 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\App.php(414): Mage_Core_Model_Config->loadModules()
+#4 G:\wamp\www\ultimo\app\code\core\Mage\Core\Model\App.php(343): Mage_Core_Model_App->_initModules()
+#5 G:\wamp\www\ultimo\app\Mage.php(684): Mage_Core_Model_App->run(Array)
+#6 G:\wamp\www\ultimo\index.php(87): Mage::run('', 'store')
+#7 {main}";s:3:"url";s:66:"/ultimo/index.php/de/organic-v-neck-weiss-48507-101/css/styles.css";s:11:"script_name";s:17:"/ultimo/index.php";}

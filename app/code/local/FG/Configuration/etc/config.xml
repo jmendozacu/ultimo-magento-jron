@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <FG_Configuration>
+            <version>0.1.11</version>
+        </FG_Configuration>
+    </modules>
+    <global>
+        <resources>
+            <fg_configuration_setup>
+                <setup>
+                    <module>FG_Configuration</module>
+                </setup>
+            </fg_configuration_setup>
+        </resources>
+    </global>
+</config>

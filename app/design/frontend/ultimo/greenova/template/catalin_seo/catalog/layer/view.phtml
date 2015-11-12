@@ -1,0 +1,78 @@
+<?php if ( $this->canShowBlock() ): ?>
+	<?php if ( !$this->getRequest()->isAjax() ): ?>
+		<div id="layered-navigation" class="layered-navigation">
+	<?php endif; ?>
+	<div class="block block-layered-nav">
+		<div class="block-title">
+			<strong><span><?php echo $this->__( 'Shop By' ) ?></span></strong>
+		</div>
+		<?php echo $this->getStateHtml() ?>
+		<div class="block-content">
+			<?php if ( $this->getLayer()->getState()->getFilters() ): ?>
+				<div class="actions"><a href="<?php echo $this->getClearUrl() ?>"><?php echo $this->__(
+							'Clear All'
+						) ?></a></div>
+			<?php endif; ?>
+			<?php if ( $this->canShowOptions() ): ?>
+				<p class="block-subtitle"><?php echo $this->__( 'Shopping Options' ) ?></p>
+				<dl id="narrow-by-list">
+					<?php $_filters = $this->getFilters() ?>
+					<?php $cupbonus = ''; ?>
+					<?php foreach ( $_filters as $_filter ): ?>
+						<?php if ( $_filter->getItemsCount() && $_filter->getItemsCount() > 1 ): ?>
+							<?php
+							$attributeModel = $_filter->getAttributeModel();
+							if ( $attributeModel == "" )
+							{
+								$codename = "undefined";
+							}
+							else
+							{
+								$codename = $attributeModel->getAttributeCode();
+							}
+							?>
+							<?php if ( $codename == "third_size" ): ?>
+								<?php $cupbonus = $_filter->getHtml() ?>
+							<?php elseif ( $codename == "secondary_size" ): ?>
+								<dt class="filter-<?php echo $codename; ?>">
+									<span class="opener"></span>
+                                        <span class="filter-name"><?php echo $this->__( "bra sizes" ) ?>
+								</dt>
+								<dd class="filter-<?php echo $codename; ?>">
+									<div class="filter-navigation-wrapper">
+										<div class="ol-wrapper clearfix">
+											<?php echo $cupbonus;
+											echo $_filter->getHtml(); ?>
+										</div>
+									</div>
+								</dd>
+							<?php
+							else: ?>
+								<dt class="filter-<?php echo $codename; ?>">
+									<span class="opener"></span>
+                                        <span class="filter-name"><?php echo $this->__( $_filter->getName() ) ?>
+								</dt>
+								<dd class="filter-<?php echo $codename; ?>">
+									<div class="filter-navigation-wrapper">
+										<div class="ol-wrapper clearfix">
+											<?php echo $_filter->getHtml() ?>
+										</div>
+									</div>
+								</dd>
+							<?php endif; ?>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				</dl>
+				<script type="text/javascript">decorateDataList('narrow-by-list')</script>
+			<?php endif; ?>
+			<?php if ( $this->getLayer()->getState()->getFilters() ): ?>
+				<div class="actions"><a class="button" href="<?php echo $this->getClearUrl() ?>"><?php echo $this->__(
+							'Clear All'
+						) ?></a></div>
+			<?php endif; ?>
+		</div>
+	</div>
+	<?php if ( !$this->getRequest()->isAjax() ): ?>
+		</div>
+	<?php endif; ?>
+<?php endif; ?>

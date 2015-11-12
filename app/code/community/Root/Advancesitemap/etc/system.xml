@@ -1,0 +1,57 @@
+<config>
+  <tabs>
+    <root translate="label" module="advancesitemap">
+      <label>Rootways</label>
+      <sort_order>700</sort_order>
+    </root>
+  </tabs>
+  <sections>
+    <advancesitemap translate="label" module="advancesitemap">
+      <label>Root Advance Sitemap</label>
+      <tab>root</tab>
+      <sort_order>7000</sort_order>
+      <show_in_default>1</show_in_default>
+      <show_in_website>1</show_in_website>
+      <show_in_store>1</show_in_store>
+      <groups>
+        <rootsitemap translate="label" module="advancesitemap">
+          <label>Advance Sitemap</label>
+          <frontend_type>text</frontend_type>
+          <sort_order>7000</sort_order>
+          <show_in_default>1</show_in_default>
+          <show_in_website>1</show_in_website>
+          <show_in_store>1</show_in_store>
+          <fields>
+						<activecategories translate="label">
+              <label>Active Categories</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+              <sort_order>1</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </activecategories>
+		  	    <activesitepages translate="label">
+              <label>Active Site Pages</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+              <sort_order>2</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </activesitepages>                                 
+            <activecontact translate="label">
+              <label>Active Contact</label>
+              <frontend_type>select</frontend_type>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+              <sort_order>3</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </activecontact>						
+          </fields>
+        </rootsitemap>
+      </groups>
+    </advancesitemap>
+  </sections>
+</config>

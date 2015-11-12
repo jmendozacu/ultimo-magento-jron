@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<layout version="1.0">
+  <advancesitemap_index_index>
+    <reference name="root">
+      <action method="unsetChild">
+        <alias>breadcrumbs</alias>
+      </action>
+      <action method="setTemplate">
+        <template>page/1column.phtml</template>
+      </action>
+    </reference>
+    <reference name="head">
+      <action method="setTitle" translate="title"><title>Sitemap</title></action>
+      <action method="addCss"><stylesheet>root/rootsitemap.css</stylesheet></action>
+			<action method="addJs"><script>root/jquery.js</script></action>
+			<action method="addJs"><script>root/rootsitemap.js</script></action>
+    </reference>
+    <reference name="content">
+      <block type="advancesitemap/rootsitemap" name="root.advancesitemap.rootsitemap" template="root/advancesitemap/rootsitemap.phtml"/>
+    </reference>
+  </advancesitemap_index_index>
+</layout>

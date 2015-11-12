@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_ValidateCustomerAddress>
+            <version>0.1.0</version>
+        </Mey_ValidateCustomerAddress>
+    </modules>
+    <global>
+        <blocks>
+            <mey_validatecustomeraddress>
+                <class>Mey_ValidateCustomerAddress_Block</class>
+            </mey_validatecustomeraddress>
+            <onestepcheckout>
+                <rewrite>
+                    <checkout>Mey_ValidateCustomerAddress_Block_Checkout</checkout>
+                </rewrite>
+            </onestepcheckout>
+        </blocks>
+        <helpers>
+            <mey_validatecustomeraddress>
+                <class>Mey_ValidateCustomerAddress_Helper</class>
+            </mey_validatecustomeraddress>
+        </helpers>
+    </global>
+</config>

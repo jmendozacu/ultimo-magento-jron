@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<Intersales_SocialSharePrivacy>
+			<active>true</active>
+			<codePool>community</codePool>
+		</Intersales_SocialSharePrivacy>
+	</modules>
+</config>

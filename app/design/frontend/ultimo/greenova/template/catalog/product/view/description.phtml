@@ -1,0 +1,98 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Product description template
+ *
+ * @see Mage_Catalog_Block_Product_View_Description
+ */
+?>
+<div class="desc-badge-panel">
+	<div id="badge-overlay" class="hide">
+		<img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="Undefined" />
+		<div class="overlay-content"></div>
+		<span class="closer btn-remove"></span>
+	</div>
+	<?php $_description = $this->getProduct()->getDescription(); ?>
+	<?php if ($_description): ?>
+	    <div class="std">
+	        <?php echo $this->helper('catalog/output')->productAttribute($this->getProduct(), $_description, 'description') ?>
+	    </div>
+	<?php endif; ?>
+	<?php $infoblocks = $this->getProduct()->getBadge(); ?>
+	<?php if ($infoblocks): ?>
+	    <div class="infoblocks">
+	    	<?php
+				$prodoptarray = explode(",", $infoblocks);
+				$productModel = Mage::getModel('catalog/product');
+				$attr = $productModel->getResource()->getAttribute("badge");
+				echo '<ul class="info-block-list">';
+				foreach ($prodoptarray as $value) {
+					if($value == "13992"){
+						echo '<li class="info-block-item">';
+							echo '<img id="info-block-strick" src="'.$this->getSkinUrl('images/strickkunst.jpg').'" alt="'.$this->__("3D Stricktechnik").'" />';
+							echo '<div class="hidden-info-block">';
+								echo $this->getLayout()->createBlock('cms/block')->setBlockId('threedstrick')->toHtml();
+							echo '</div>';
+						echo '</li>';
+					}elseif($value == "14072"){
+						echo '<li class="info-block-item">';
+							echo '<img id="info-block-cotton" src="'.$this->getSkinUrl('images/bio-baumwolle.jpg').'" alt="'.$this->__("Bio-Baumwolle").'" />';
+							echo '<div class="hidden-info-block">';
+								echo $this->getLayout()->createBlock('cms/block')->setBlockId('biocotton')->toHtml();
+							echo '</div>';
+						echo '</li>';
+					}elseif($value == "13122"){
+						echo '<li class="info-block-item">';
+							echo '<img id="info-block-bluedesign" src="'.$this->getSkinUrl('images/bluedesign.jpg').'" alt="'.$this->__("Bluedesign").'" />';
+							echo '<div class="hidden-info-block">';
+								echo $this->getLayout()->createBlock('cms/block')->setBlockId('bluesign')->toHtml();
+							echo '</div>';
+						echo '</li>';
+					}elseif($value == "13382"){
+						echo '<li class="info-block-item">';
+							echo '<img id="info-block-konfort" src="'.$this->getSkinUrl('images/tragekomfort.jpg').'" alt="'.$this->__("Gepruefte Qualitaet - Tragekomfortnote 1.0").'" />';
+							echo '<div class="hidden-info-block">';
+								echo $this->getLayout()->createBlock('cms/block')->setBlockId('tragekomfort')->toHtml();
+							echo '</div>';
+						echo '</li>';
+					}elseif($value == "13402"){
+						echo '<li class="info-block-item">';
+							echo '<img id="info-block-airconditioner" src="'.$this->getSkinUrl('images/klimaanlage.jpg').'" alt="'.$this->__("Klimaanlage").'" />';
+							echo '<div class="hidden-info-block">';
+								echo $this->getLayout()->createBlock('cms/block')->setBlockId('klimaanlage')->toHtml();
+							echo '</div>';
+						echo '</li>';
+					}
+				}
+				echo '</ul>';
+			?>
+		<script type="text/javascript">
+			linkbadgeicons();
+		</script>
+	    </div>
+	<?php endif; ?>
+</div>

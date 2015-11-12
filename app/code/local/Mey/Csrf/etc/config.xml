@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mey_Csrf>
+            <version>0.1.0</version>
+        </Mey_Csrf>
+    </modules>
+    <global>
+        <models>
+            <mey_csrf>
+                <class>Mey_Csrf_Model</class>
+            </mey_csrf>
+        </models>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <mey_csrf>
+                        <class>mey_csrf/observer</class>
+                        <method>disableCsrf</method>
+                    </mey_csrf>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+    </global>
+</config>

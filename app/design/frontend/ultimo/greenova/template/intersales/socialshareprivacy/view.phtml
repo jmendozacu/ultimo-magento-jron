@@ -1,0 +1,33 @@
+<?php if($this->canShow()): ?>
+	<div id="socialshareprivacy"></div>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function(){
+			if(jQuery('#socialshareprivacy').length > 0){
+				jQuery('#socialshareprivacy').socialSharePrivacy({
+					services : {
+						facebook : {
+							'status': '<?php echo $this->isFacebookEnabled() ? 'on' : 'off' ?>'<?php if($this->getFacebookPrivacyInfo() != ''): ?>,
+								'txt_info': '<?php echo $this->getFacebookPrivacyInfo() ?>'<?php endif; ?><?php if($this->getUrlOfFacebookDummyImage() != ''): ?>,
+								'dummy_img': '<?php echo $this->getUrlOfFacebookDummyImage() ?>'
+							<?php endif; ?>
+						}, twitter : {
+							'status' : '<?php echo $this->isTwitterEnabled() ? 'on' : 'off' ?>'<?php if($this->getTwitterPrivacyInfo() != ''): ?>,
+								'txt_info': '<?php echo $this->getTwitterPrivacyInfo() ?>'<?php endif; ?><?php if($this->getUrlOfTwitterDummyImage() != ''): ?>,
+								'dummy_img': '<?php echo $this->getUrlOfTwitterDummyImage() ?>'
+							<?php endif; ?>
+							
+						}, gplus : {
+							'status' : '<?php echo $this->isGooglePlusEnabled() ? 'on' : 'off' ?>'<?php if($this->getGooglePlusPrivacyInfo() != ''): ?>,
+								'txt_info': '<?php echo $this->getGooglePlusPrivacyInfo() ?>'<?php endif; ?><?php if($this->getUrlOfGooglePlusDummyImage() != ''): ?>,
+								'dummy_img': '<?php echo $this->getUrlOfGooglePlusDummyImage() ?>'
+							<?php endif; ?>
+						}
+					}<?php if($this->getUrlOfPrivacyPage() != ''): ?>, 'info_link': '<?php echo $this->getUrlOfPrivacyPage(); ?>'<?php endif; ?>
+					<?php if($this->getInfoText() != ''): ?>, 'txt_help': '<?php echo $this->getInfoText(); ?>'<?php endif; ?>
+					, 'uri': '<?php echo $this->getCurrentUrl(); ?>'
+				});
+			}
+		});
+  </script>
+<?php endif; ?>

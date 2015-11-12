@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+	   <Root_Advancesitemap>
+	      <active>true</active>
+	      <codePool>community</codePool>
+	      <version>1.0.1</version>
+	   </Root_Advancesitemap>
+	</modules>
+</config>

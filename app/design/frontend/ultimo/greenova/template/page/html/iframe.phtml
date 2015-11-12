@@ -1,0 +1,46 @@
+<?php
+	function get_request($string=false) {
+		$default = array(
+			'sxx_page'	=> 'sxx_page=mageproxy.newsletter'
+		);
+		$request = array();
+		foreach ($_REQUEST as $key => $value) {
+			$request[$key] = str_replace('-','_',$_REQUEST[$key]);
+		}
+		if(!$string)
+			return $request;
+		
+		$arr = array();
+
+		while(list($key,$value) = each($request)) {
+			if(is_array($value)) {
+				foreach($value as $key1 => $value1){
+					if(is_array($value1)) {
+						foreach($value1 as $key2 => $value2) {
+							array_push($arr,$key. '['.$key1.']['.$key2.']='.rawurlencode($value2));
+						}
+					} else {
+						array_push($arr,$key. '['.$key1.']='.rawurlencode($value1));
+					}
+				}
+			} else {
+				array_push($arr,$key. '='.rawurlencode($value));
+			}
+		}
+		
+		$arr = array_merge($default,$arr);
+		
+		$string = implode('&',$arr);
+		return $string;
+	}
+	
+	
+	$request = get_request(true);
+    $store_lang = Mage::app()->getLocale()->getDefaultLocale();
+	
+?>
+<?php
+$store_lang = explode("_",$store_lang);
+?>
+<iframe id="proxyFrame" src="https://s01.shop.fortuneglobe.com/mey/index.php?<?php echo $request; ?>&sxx_language=<?php echo $store_lang[0]; ?>"
+		style="border:0;overflow:none;width:100%;min-height:580px;"></iframe>

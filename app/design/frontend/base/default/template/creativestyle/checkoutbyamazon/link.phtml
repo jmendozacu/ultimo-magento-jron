@@ -1,0 +1,79 @@
+<?php
+/**
+ * This file is part of The Official Amazon Payments Magento Extension
+ * (c) creativestyle GmbH <amazon@creativestyle.de>
+ * All rights reserved
+ *
+ * Reuse or modification of this source code is not allowed
+ * without written permission from creativestyle GmbH
+ *
+ * @category   Creativestyle
+ * @package    Creativestyle_CheckoutByAmazon
+ * @copyright  Copyright (c) 2011 - 2013 creativestyle GmbH (http://www.creativestyle.de)
+ * @author     Marek Zabrowarny / creativestyle GmbH <amazon@creativestyle.de>
+ */
+?>
+<script type="text/javascript" src="<?php echo $this->getPaymentWidgetJsUrl(); ?>"></script>
+<div id="AmazonInlineWidget"><img src="<?php echo $this->getButtonWidgetUrl(); ?>" style="cursor: pointer;"/></div>
+<script type="text/javascript">//<![CDATA[
+
+    var authorization = false, accordion, checkout;
+
+    function processCheckout(purchaseContractId, overlay) {
+        if (overlay) {
+            Modalbox.show('<?php echo $this->getAmazonCheckoutUrl(); ?>', {
+                title: '<?php echo $this->__('Checkout by Amazon'); ?>',
+                width: <?php echo $this->getOverlayWidth(); ?>,
+                params: {
+                    purchaseContractId: purchaseContractId,
+                    overlay: 1
+                },
+                method: 'post',
+                afterLoad: function() {
+                    authorization = false;
+                    accordion = new Accordion('checkoutSteps', '.step-title', true);
+                    checkout = new CheckoutByAmazon(accordion, purchaseContractId, {
+                        saveShipping: '<?php echo $this->getUrl('checkoutbyamazon/checkout/saveShipping'); ?>',
+                        saveShippingMethod: '<?php echo $this->getUrl('checkoutbyamazon/checkout/saveShippingMethod'); ?>',
+                        savePayment: '<?php echo $this->getUrl('checkoutbyamazon/checkout/savePayment'); ?>',
+                        saveOrder: '<?php echo $this->getUrl('checkoutbyamazon/checkout/saveOrder'); ?>',
+                        success: '<?php echo $this->getUrl('checkoutbyamazon/checkout/success'); ?>',
+                        progress: '<?php echo $this->getUrl('checkoutbyamazon/checkout/progress'); ?>',
+                        failure: '<?php echo $this->getUrl('checkout/cart'); ?>'
+                    });
+                    checkout.gotoSection('shipping');
+                }
+            });
+        } else {
+            var form = document.createElement('form');
+            var id = document.createElement('input');
+            var overlay = document.createElement('input');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '<?php echo $this->getAmazonCheckoutUrl(); ?>');
+            id.setAttribute('type', 'hidden');
+            id.setAttribute('name', 'purchaseContractId');
+            id.setAttribute('value', purchaseContractId);
+            overlay.setAttribute('type', 'hidden');
+            overlay.setAttribute('name', 'overlay');
+            overlay.setAttribute('value', 0);
+            form.appendChild(id);
+            form.appendChild(overlay);
+            document.body.appendChild(form);
+            form.submit();
+            return;
+        }
+        return false;
+    }
+
+    new CBA.Widgets.InlineCheckoutWidget({
+        merchantId: '<?php echo $this->getMerchantId(); ?>',
+	onAuthorize: function(widget) {
+            if (!authorization) {
+                authorization = true;
+                processCheckout(widget.getPurchaseContractId(), <?php echo (int)$this->isOverlayEnabled(); ?>);
+            }
+        }
+    }).render('AmazonInlineWidget');
+
+//]]></script>
+

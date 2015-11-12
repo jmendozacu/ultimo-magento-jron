@@ -1,0 +1,27 @@
+<div class="rootwrapper">
+	<?php if(Mage::helper('advancesitemap')->activeSitepages() || Mage::helper('advancesitemap')->activeContact() || Mage::helper('advancesitemap')->activeCategories()): ?>
+ 		<ul class="root-level0">    			  	  
+			<?php if(Mage::helper('advancesitemap')->activeCategories()): ?>	
+        <li class="categories"><span class="root-title">Our Categories</span>
+					<?php
+						$rootCatId = Mage::app()->getStore()->getRootCategoryId();
+						$catlistHtml = $this->getCategoriesTree($rootCatId);
+						echo $catlistHtml;
+					?>
+        </li>
+      <?php endif; ?>        
+      <?php if(Mage::helper('advancesitemap')->activeSitepages() || Mage::helper('advancesitemap')->activeContact()): ?>
+        <li class="sitepages"><span class="root-title">Pages</span>		
+          <ul class="root-level1">
+            <?php if(Mage::helper('advancesitemap')->activeSitepages()): ?>
+              <?php echo $this->getPagesTree(); ?>
+            <?php endif; ?>            
+            <?php if(Mage::helper('advancesitemap')->activeContact()): ?>
+              <li><a href="<?php echo $this->getUrl('contacts'); ?>" title="<?php echo $this->__('Contact'); ?>"><?php echo $this->__('Contact'); ?></a></li>
+            <?php endif; ?>
+          </ul>
+        </li>
+      <?php endif; ?>
+  	</ul>  
+ 	<?php endif; ?>
+</div>

@@ -1,0 +1,227 @@
+<?php
+/**
+ * Product view template
+ *
+ * @see Mage_Catalog_Block_Product_View
+ * @see Mage_Review_Block_Product_View
+ */
+?>
+<?php
+$helpImgBase = $this->helper('catalog/image');
+$_helper = $this->helper('catalog/output');
+$_product = $this->getProduct();
+$theme = $this->helper('ultimo');
+
+// get collection of configurable products
+$configurableProductCollection = Mage::helper('codekunst_looks')->getConfigurableProductCollectionForBundle($_product);
+
+$productCount = count($configurableProductCollection);
+
+// get first id for initial price building with JS
+$firstId = null;
+if ($productCount > 0) {
+    $firstId = $configurableProductCollection->getFirstItem()->getId();
+}
+
+// get form action url with form key from session (uses custom add-to-cart controller)
+$formActionUrl = $this->getUrl('looks/cart/add', array(Mage_Core_Model_Url::FORM_KEY => Mage::getSingleton('core/session')->getFormKey()));
+
+//Up-sell products. $section['upsell'] is set only if up-sell products (or replacement) exist
+$replaceUpsell = $theme->getCfg('product_page/replace_upsell');
+if ($replaceUpsell == 1) //don't replace with static block
+{
+	if ($tmpHtml = trim($this->getChildHtml('upsell_products')))
+		$section['upsell'] = $tmpHtml;
+	//$section['upsell'] = $this->getChildHtml('upsell_products');
+}
+elseif ($replaceUpsell == 2) //if upsell is empty, replace with static block
+{
+	if ($tmpHtml = trim($this->getChildHtml('upsell_products')))
+		$section['upsell'] = $tmpHtml;
+	else //upsell empty
+		if ($tmpHtml = $this->getChildHtml('block_product_replace_upsell'))
+			$section['upsell'] = '<div class="block_product_replace_upsell">'. $tmpHtml .'</div>';
+}
+elseif ($replaceUpsell == 3) //replace with static block
+{
+	if ($tmpHtml = $this->getChildHtml('block_product_replace_upsell'))
+		$section['upsell'] = '<div class="block_product_replace_upsell">'. $tmpHtml .'</div>';
+}
+?>
+<script type="text/javascript">
+    var optionsPrices = {};
+    var upsellForms = {};
+    var spConfigs = {};
+</script>
+
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<div class="product-view" id="product-view-<?php echo $_product->getId() ?>">
+    <form action="<?php echo $formActionUrl ?>" method="post" id="product_addtocart_form">
+        <?php echo $this->getBlockHtml('formkey'); ?>
+        <div class="look-container">
+            <div class="look-title">
+                <h1 class="uppercase"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+                <hr>
+            </div>
+            <div class="look-inner-container">
+                <div class="look-left">
+                    <div id="slider">
+                        <a href="javascript:void(0)" class="control_next"></a>
+                        <a href="javascript:void(0)" class="control_prev"></a>
+                        <ul>
+                        <?php foreach($configurableProductCollection as $configurableProduct): ?>
+                            <?php
+                            $productName = $_helper->productAttribute($configurableProduct, $configurableProduct->getName(), 'name');
+
+                            $childProducts = Mage::getModel('catalog/product_type_configurable')
+                                ->getUsedProducts(null, $configurableProduct);
+
+                            $firstChild = null;
+
+                            if (count($childProducts) > 0) {
+                                $firstChild = $childProducts[0];
+                                $requestPath = Mage::getBaseUrl().$firstChild->getUrlSeoKey();
+                            }
+                            ?>
+                                <li>
+                                <div class="look-product-col" id="look-configurable-<?php echo $configurableProduct->getId() ?>">
+                                    <div class="look-row-1">
+                                        <div class="look-checkbox">
+                                            <label>
+                                                <?php echo $this->__('select') ?>
+                                                &nbsp;
+                                                <input type="checkbox" data-product-name="<?php echo $productName ?>" name="products[<?php echo $configurableProduct->getId() ?>][look-checkbox]" id="look-checkbox-<?php echo $configurableProduct->getId() ?>" data-product-id="<?php echo $configurableProduct->getId() ?>" checked="checked">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="look-row product-title uppercase">
+                                        <strong><?php echo $productName ?></strong>
+                                    </div>
+                                    <div class="look-row-2"><img src="<?php echo $helpImgBase->init($firstChild, 'image')->constrainOnly(false)->keepAspectRatio(true)->keepFrame(false)->resize(330); ?>"></div>
+                                    <div class="look-row-3">
+                                        <table>
+                                            <tbody>
+                                            <tr>
+                                                <td class="label"><?php echo $this->__('Price') ?></td>
+                                                <td class="price"><?php echo $this->getPriceHtml($configurableProduct) ?></td>
+                                            </tr>
+                                            <?php echo $this->getLayout()->createBlock('catalog/product_view_type_configurable')
+                                                ->setTemplate('codekunst_looks/catalog/product/view/type/options/configurable.phtml')
+                                                ->setProduct($configurableProduct)
+                                                ->toHtml(); ?>
+                                            <?php echo $this->getLayout()->createBlock('core/template')
+                                                ->setTemplate('codekunst_looks/catalog/product/view/qty.phtml')
+                                                ->setProduct($configurableProduct)
+                                                ->toHtml() ?>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <a class="look-details-link" target="_blank" href="<?php echo $requestPath ?>"><?php echo $this->__('Details') ?></a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                </li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <?php if (strlen($_product->getLookTextTitle()) > 0 && strlen($_product->getLookText()) > 0): ?>
+                        <div class="additional-look-info">
+                            <div class="look-title uppercase"><strong><?php echo $_product->getLookTextTitle() ?></strong></div>
+                            <div class="look-text"><?php echo $_product->getLookText() ?></div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="look-right">
+                    <div class="look-product-checkout">
+                        <img src="<?php echo $helpImgBase->init($_product, 'image'); ?>">
+                        <div class="uppercase"><strong><?php echo $this->__('My Look') ?></strong></div>
+
+                        <div class="look-mini-cart">
+                            <p class="empty hidden"><?php echo $this->__('Your shopping cart is empty.') ?></p>
+                            <table>
+                                <tbody>
+                                <?php foreach($configurableProductCollection as $configurableProduct): ?>
+                                <tr class="minicart-<?php echo $configurableProduct->getId() ?>">
+                                    <td class="label"><?php echo $_helper->productAttribute($configurableProduct, $configurableProduct->getName(), 'name') ?></td>
+                                    <td class="price">
+                                        <div class="price-box">
+                                            <span class="regular-price">
+                                                <span class="price"></span>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="look-total-price">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="label">
+                                            <?php echo $this->__('Price') ?>
+                                        </td>
+                                        <td class="price">
+                                            <div class="price-box">
+                                                <span class="regular-price" id="total-price">
+                                                    <span class="price"></span>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <?php echo $this->getLayout()->createBlock('catalog/product_view')
+                                ->setTemplate('codekunst_looks/catalog/product/view/type/default.phtml')
+                                ->toHtml() ?>
+                        </div>
+
+                        <?php $buttonTitle = $this->__('Add to Cart'); ?>
+
+                        <div class="add-to-cart">
+                            <button type="button" title="<?php echo $buttonTitle ?>" class="button btn-cart"><span><span><?php echo $buttonTitle ?></span></span></button>
+                        </div>
+
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+    </form>
+
+    <?php if (isset($section['upsell'])): ?>
+        <div class="box-additional no-gutter box-up-sell <?php echo $collatPrimaryColGridClass; ?>"><?php echo $section['upsell']; ?></div>
+    <?php endif; ?>
+</div> <!-- end: product-view -->
+
+
+<script type="text/javascript">
+    <?php if($firstId): ?>
+    document.observe("dom:loaded", function() {
+        $(document).fire('looks:recalculate-total', { productId: <?php echo $firstId ?> });
+    });
+    <?php endif; ?>
+
+    var addToCartButton = jQuery('.add-to-cart').find('button');
+
+    addToCartButton.on('click', function() {
+        if (!hasSelections()) {
+            showMessage('<?php echo $this->__('Please select at least one item.') ?>');
+            return false;
+        }
+        if (!allSelectionsValid()) {
+            showMessage('<?php echo $this->__('Please select a size.') ?>');
+            return false;
+        }
+        productAddToCartForm.submit(this);
+        return true;
+    });
+
+</script>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/codekunst_looks/product_view.js') ?>"></script>
